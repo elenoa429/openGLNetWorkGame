@@ -1,0 +1,50 @@
+﻿2016/05/13 2:02:23 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\libpng\libpng.vcxproj" (build ターゲット)。
+     1>InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Release Library\libpng.unsuccessfulbuild" を作成しています。
+       ClCompile:
+         ファイル "Release Library\libpng16.pch" を削除しています。
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"..\..\..\..\zlib-1.2.8" /Zi /nologo /W4 /WX /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /fp:except- /Zc:wchar_t- /Zc:forScope /Yc"pngpriv.h" /Fp"Release Library\libpng16.pch" /Fo"Release Library\\" /Fd"Release Library\vc100.pdb" /FR"Release Library\\" /Gd /TC /wd4996 /wd4127 /analyze- /errorReport:prompt ..\..\..\png.c
+         png.c
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"..\..\..\..\zlib-1.2.8" /Zi /nologo /W4 /WX /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /fp:except- /Zc:wchar_t- /Zc:forScope /Yu"pngpriv.h" /Fp"Release Library\libpng16.pch" /Fo"Release Library\\" /Fd"Release Library\vc100.pdb" /FR"Release Library\\" /Gd /TC /wd4996 /wd4127 /analyze- /errorReport:prompt ..\..\..\pngerror.c ..\..\..\pngget.c ..\..\..\pngmem.c ..\..\..\pngpread.c ..\..\..\pngread.c ..\..\..\pngrio.c ..\..\..\pngrtran.c ..\..\..\pngrutil.c ..\..\..\pngset.c ..\..\..\pngtrans.c ..\..\..\pngwio.c ..\..\..\pngwrite.c ..\..\..\pngwtran.c ..\..\..\pngwutil.c
+         pngerror.c
+         pngget.c
+         pngmem.c
+         pngpread.c
+         pngread.c
+         pngrio.c
+         pngrtran.c
+         pngrutil.c
+         pngset.c
+         pngtrans.c
+         pngwio.c
+         pngwrite.c
+         pngwtran.c
+         pngwutil.c
+       Lib:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\libpng16.lib" /NOLOGO /LTCG "Release Library\png.obj"
+         "Release Library\pngerror.obj"
+         "Release Library\pngget.obj"
+         "Release Library\pngmem.obj"
+         "Release Library\pngpread.obj"
+         "Release Library\pngread.obj"
+         "Release Library\pngrio.obj"
+         "Release Library\pngrtran.obj"
+         "Release Library\pngrutil.obj"
+         "Release Library\pngset.obj"
+         "Release Library\pngtrans.obj"
+         "Release Library\pngwio.obj"
+         "Release Library\pngwrite.obj"
+         "Release Library\pngwtran.obj"
+         "Release Library\pngwutil.obj"
+         libpng.vcxproj -> C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\libpng16.lib
+       BscMake:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\bscmake.exe /nologo /o"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\libpng16.bsc" "Release Library\png.sbr" "Release Library\pngerror.sbr" "Release Library\pngget.sbr" "Release Library\pngmem.sbr" "Release Library\pngpread.sbr" "Release Library\pngread.sbr" "Release Library\pngrio.sbr" "Release Library\pngrtran.sbr" "Release Library\pngrutil.sbr" "Release Library\pngset.sbr" "Release Library\pngtrans.sbr" "Release Library\pngwio.sbr" "Release Library\pngwrite.sbr" "Release Library\pngwtran.sbr" "Release Library\pngwutil.sbr"
+       FinalizeBuildStatus:
+         ファイル "Release Library\libpng.unsuccessfulbuild" を削除しています。
+         "Release Library\libpng.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\libpng\libpng.vcxproj" (build ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:03.24

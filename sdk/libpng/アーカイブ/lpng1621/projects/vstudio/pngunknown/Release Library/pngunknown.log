@@ -1,0 +1,35 @@
+﻿2016/05/13 2:03:40 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\pngunknown\pngunknown.vcxproj" (build ターゲット)。
+     1>InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Release Library\pngunknown.unsuccessfulbuild" を作成しています。
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"..\..\..\..\zlib-1.2.8" /I..\..\..\scripts /Zi /nologo /W4 /WX /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /GF /Gm- /EHsc /MT /GS /Gy- /fp:precise /fp:except- /Zc:wchar_t /Zc:forScope /Fo"Release Library\\" /Fd"Release Library\vc100.pdb" /FR"Release Library\\" /Gd /TC /wd4996 /wd4127 /analyze- /errorReport:prompt ..\..\..\contrib\libtests\pngunknown.c
+         pngunknown.c
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\\" libpng16.lib zlib.lib /MANIFEST /ManifestFile:"Release Library\pngunknown.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.lib" /MACHINE:X86 "Release Library\pngunknown.obj"
+         コード生成しています。
+         コード生成が終了しました。
+         pngunknown.vcxproj -> C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe;#1" /manifest "Release Library\pngunknown.exe.intermediate.manifest"
+       BscMake:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\bscmake.exe /nologo /o"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.bsc" "Release Library\pngunknown.sbr"
+       CustomBuildStep:
+         Description: Executing PNG validation program
+         "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe" --strict --default --touch "Release Library\pngunknown.out" ../../../pngtest.png
+         :VCEnd
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe discard
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe save
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe if-safe
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe vpAg
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe sTER
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe IDAT
+         PASS: C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\pngunknown.exe sAPI
+       FinalizeBuildStatus:
+         ファイル "Release Library\pngunknown.unsuccessfulbuild" を削除しています。
+         "Release Library\pngunknown.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\pngunknown\pngunknown.vcxproj" (build ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:08.35
