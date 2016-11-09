@@ -1,0 +1,40 @@
+﻿2016/05/13 2:03:38 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\zlib\zlib.vcxproj" (build ターゲット)。
+     1>InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Release Library\zlib.unsuccessfulbuild" を作成しています。
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX /Ox /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D Z_SOLO /Gm- /EHsc /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release Library\\" /Fd"Release Library\vc100.pdb" /FR"Release Library\\" /Gd /TC /analyze- /errorReport:prompt "..\..\..\..\zlib-1.2.8\adler32.c" "..\..\..\..\zlib-1.2.8\compress.c" "..\..\..\..\zlib-1.2.8\crc32.c" "..\..\..\..\zlib-1.2.8\deflate.c" "..\..\..\..\zlib-1.2.8\infback.c" "..\..\..\..\zlib-1.2.8\inffast.c" "..\..\..\..\zlib-1.2.8\inflate.c" "..\..\..\..\zlib-1.2.8\inftrees.c" "..\..\..\..\zlib-1.2.8\trees.c" "..\..\..\..\zlib-1.2.8\uncompr.c" "..\..\..\..\zlib-1.2.8\zutil.c"
+         adler32.c
+         compress.c
+         crc32.c
+         deflate.c
+         infback.c
+         inffast.c
+         inflate.c
+         inftrees.c
+         trees.c
+         uncompr.c
+         zutil.c
+       Lib:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\zlib.lib" /NOLOGO /LTCG "Release Library\adler32.obj"
+         "Release Library\compress.obj"
+         "Release Library\crc32.obj"
+         "Release Library\deflate.obj"
+         "Release Library\infback.obj"
+         "Release Library\inffast.obj"
+         "Release Library\inflate.obj"
+         "Release Library\inftrees.obj"
+         "Release Library\trees.obj"
+         "Release Library\uncompr.obj"
+         "Release Library\zutil.obj"
+         zlib.vcxproj -> C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\zlib.lib
+       BscMake:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\bscmake.exe /nologo /o"C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\Release Library\zlib.bsc" "Release Library\adler32.sbr" "Release Library\compress.sbr" "Release Library\crc32.sbr" "Release Library\deflate.sbr" "Release Library\infback.sbr" "Release Library\inffast.sbr" "Release Library\inflate.sbr" "Release Library\inftrees.sbr" "Release Library\trees.sbr" "Release Library\uncompr.sbr" "Release Library\zutil.sbr"
+       FinalizeBuildStatus:
+         ファイル "Release Library\zlib.unsuccessfulbuild" を削除しています。
+         "Release Library\zlib.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "C:\sdk\libpng\アーカイブ\lpng1621\projects\vstudio\zlib\zlib.vcxproj" (build ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:01.49
