@@ -107,7 +107,7 @@ bool CTexLoaderPNG::TextuerLoadPNG( char* path , CTexture** ppTexture )
 	GLubyte **recv = new GLubyte*[ height ];
 	
 	for( int i = 0; i < height; i++ )
-		recv[ i ] = &data[ i * rb ];
+		recv[ i ] = &data[ ( height - 1 - i ) * rb ];
 
 	png_read_image( sp , recv );
 	png_read_end( sp , ip );
