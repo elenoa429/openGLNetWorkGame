@@ -44,7 +44,7 @@
 //==============================================================================
 CSceneDX::CSceneDX()
 {
-	m_pPolygon = NULL;
+
 }
 
 //==============================================================================
@@ -67,9 +67,6 @@ bool CSceneDX::Init( void )
 {
 	bool bResult = false;
 
-	m_pPolygon = new CPolygon;
-	bResult = m_pPolygon -> Init();
-
 	if( bResult == false )
 	{
 		return false;	// 処理失敗
@@ -86,12 +83,7 @@ bool CSceneDX::Init( void )
 //==============================================================================
 void CSceneDX::Uninit( void )
 {
-	if( m_pPolygon != NULL )
-	{
-		m_pPolygon -> Uninit();
-		delete m_pPolygon;
-		m_pPolygon = NULL;
-	}
+
 }
 
 //==============================================================================
@@ -102,7 +94,7 @@ void CSceneDX::Uninit( void )
 //==============================================================================
 void CSceneDX::Update( void )
 {
-	m_pPolygon -> Update();
+
 }
 
 //==============================================================================
@@ -113,17 +105,7 @@ void CSceneDX::Update( void )
 //==============================================================================
 void CSceneDX::Draw( void )
 {
-	CRenderer* pRenderer = GetManager()->GetRenderer();
 
-	if( pRenderer -> BeginScene() == true )
-	{
-		/* ===各オブジェクトの描画=== */
-		m_pPolygon -> Draw();
-
-		/* ===描画終了=== */
-		pRenderer -> EndScene();
-		pRenderer -> SwapBuffer();
-	}
 }
 
 //==============================================================================
