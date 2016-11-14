@@ -166,11 +166,11 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 
 	//CSceneGL3D::Create( "data\\TEXTURE\\filed00.jpg" );
 
-	//CSceneGL2D::Create( "data\\TEXTURE\\fighter00.png" );
+	CSceneGL2D::Create( "data\\TEXTURE\\skyBox00.png" );
 
 	//CSceneGLModel::Create( "data\\MODEL\\miku_01.obj" );
 
-	CMotionEditModel::Create();
+	//CMotionEditModel::Create();
 
 	//---------------------------------------------
 	// [ デバッグプロシージャの生成 ]

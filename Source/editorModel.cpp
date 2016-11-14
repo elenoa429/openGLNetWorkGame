@@ -102,20 +102,20 @@ CMotionEditModel* CMotionEditModel::Create( void )
 bool CMotionEditModel::Init( void )
 {
 	// モデルワーク生成処理
-	m_pModelManager = CParentModelManagerGL::Create();
-
-	if( m_pModelManager == NULL )
-	{
-		return false;
-	}
+	//m_pModelManager = CParentModelManagerGL::Create();
+	//
+	//if( m_pModelManager == NULL )
+	//{
+	//	return false;
+	//}
 
 	// モーション生成
-	m_pMotion = CMotionGL::Create( "data\\ANIMATION\\miku_01_01.anm" );
-
-	if( m_pMotion == NULL )
-	{
-		return false;
-	}
+	//m_pMotion = CMotionGL::Create( "data\\ANIMATION\\miku_01_01.anm" );
+	//
+	//if( m_pMotion == NULL )
+	//{
+	//	return false;
+	//}
 
 	return true;
 }
@@ -192,10 +192,10 @@ void CMotionEditModel::Update( void )
 	//---------------------------------------------------
 	// [ モーション処理 ]
 	//---------------------------------------------------
-	m_pMotion->Update();
-	m_pMotion->SetMotionData( m_pModelManager );
-
-	m_pModelManager->Update();
+	//m_pMotion->Update();
+	//m_pMotion->SetMotionData( m_pModelManager );
+	//
+	//m_pModelManager->Update();
 
 }
 
@@ -220,7 +220,7 @@ void CMotionEditModel::Draw( void )
 	MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxTrans );					// 位置行列の合成
 
 	// モデルの描画
-	m_pModelManager->Draw( &m_mtxWorld );
+	//m_pModelManager->Draw( &m_mtxWorld );
 }
 
 //==============================================================================

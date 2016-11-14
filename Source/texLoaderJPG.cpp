@@ -133,30 +133,30 @@ bool CTexLoaderJPG::TextuerLoadJPG( char* path , CTexture** ppTexture )
 	jpeg_destroy_decompress( &cInfo );
 
 	// 画像のビット情報をUV座標で使えるようにスワップする
-	GLubyte* bits = new GLubyte[ cInfo.output_height * nBmpLineBytes ];									// スワップしたものを格納するワーク
-	int heightNum = cInfo.output_height;																// 高さ数
-
-	for( int i = 0 ; i < heightNum; i++  )
-	{
-		long setPointDst = i * nBmpLineBytes;															// Dstの格納地点( 上から下へ )
-		long setPointSrc = ( cInfo.output_height * nBmpLineBytes - nBmpLineBytes ) - setPointDst;		// Srcの格納地点( 下から上へ )
-		long setSize     = nBmpLineBytes * sizeof( GLubyte );											// 格納サイズ( １行あたりの大きさ )
-
-		memcpy( &bits[ setPointDst ] , &lpJpgDataTop[ setPointSrc ] , setSize );						// メモリコピー
-	}
+	//GLubyte* bits = new GLubyte[ cInfo.output_height * nBmpLineBytes ];									// スワップしたものを格納するワーク
+	//int heightNum = cInfo.output_height;																// 高さ数
+	//
+	//for( int i = 0 ; i < heightNum; i++  )
+	//{
+	//	long setPointDst = i * nBmpLineBytes;															// Dstの格納地点( 上から下へ )
+	//	long setPointSrc = ( cInfo.output_height * nBmpLineBytes - nBmpLineBytes ) - setPointDst;		// Srcの格納地点( 下から上へ )
+	//	long setSize     = nBmpLineBytes * sizeof( GLubyte );											// 格納サイズ( １行あたりの大きさ )
+	//
+	//	memcpy( &bits[ setPointDst ] , &lpJpgDataTop[ setPointSrc ] , setSize );						// メモリコピー
+	//}
 
 	//--------------------------------------
 	// [ テクスチャ生成処理 ]
 	//--------------------------------------
-	*ppTexture = CTextureGL::Create( ( int )biWidth , ( int )biHeight , GL_RGB , bits );	// 生成処理の呼び出し
+	*ppTexture = CTextureGL::Create( ( int )biWidth , ( int )biHeight , GL_RGB , lpJpgDataTop );	// 生成処理の呼び出し
 
 	//--------------------------------------
 	// [ 読み込み終了処理 ]
 	//--------------------------------------
 	fclose( fp );													// ファイルクローズ
 
-	delete[] bits;
-	bits = NULL;
+	//delete[] bits;
+	//bits = NULL;
 
 	delete[] lpJpgData;
 	lpJpgData = NULL;

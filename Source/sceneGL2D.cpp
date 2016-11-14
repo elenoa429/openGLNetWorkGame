@@ -173,19 +173,19 @@ void CSceneGL2D::Draw( void )
 
 	glBegin( GL_TRIANGLE_STRIP );
 	{
-		glTexCoord2f( 0.0f , 0.0f );
+		glTexCoord2f( 0.0f , 1.0f );
 		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
 		glVertex3f( m_pos.x - halfX , m_pos.y - halfY , 0.0f );
 
-		glTexCoord2f( 1.0f , 0.0f );
+		glTexCoord2f( 1.0f , 1.0f );
 		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
 		glVertex3f( m_pos.x + halfX , m_pos.y - halfY , 0.0f );
 
-		glTexCoord2f( 0.0f , 1.0f );
+		glTexCoord2f( 0.0f , 0.0f );
 		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
 		glVertex3f( m_pos.x - halfX , m_pos.y + halfY , 0.0f );
 
-		glTexCoord2f( 1.0f , 1.0f );
+		glTexCoord2f( 1.0f , 0.0f );
 		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
 		glVertex3f( m_pos.x + halfX , m_pos.y + halfY , 0.0f );
 	}
