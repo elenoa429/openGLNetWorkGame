@@ -28,6 +28,7 @@
 #include "material.h"
 #include "debugProc.h"
 #include "soundAL.h"
+#include "mode.h"
 
 //==============================================================================
 // マクロ定義
@@ -63,12 +64,16 @@ public:
 	CRenderer* GetRenderer( void ){ return m_pRenderer; }				// レンダラー取得処理
 	CCameraGL* GetCamera( void ){ return m_pCamera; }					// カメラ取得処理
 
+	bool SetMode( CMode* pMode );
+	CMode* GetMode( void ){ return m_pMode; }
+
 	//---------------------------------------------
 	// [ メンバ変数 ]
 	//---------------------------------------------
 private:
 	CRenderer* m_pRenderer;												// レンダラー処理へのポインタ
 	CCameraGL* m_pCamera;												// カメラ処理へのポインタ
+	CMode* m_pMode;
 };
 
 //==============================================================================

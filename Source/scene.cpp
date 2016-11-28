@@ -1,5 +1,5 @@
 //==============================================================================
-// タイトル     :   描画用クラス
+// タイトル     :   シーンクラス
 // ファイル名   :   scene.cpp
 // 作成者       :   AT13B284 21 数藤凌哉
 // 作成日       :   2016/04/19
@@ -8,14 +8,15 @@
 //==============================================================================
 // 更新履歴: -2016/04/19 数藤凌哉
 //           ・制作開始
-//           -2016/06/20
-//           ・リスト管理機構を追加
+//           -2016/05/16
+//           ・リスト構造の管理機構を作成
 //==============================================================================
 
 //==============================================================================
 // インクルードファイル
 //==============================================================================
 #include "scene.h"
+#include "main.h"
 
 //==============================================================================
 // 列挙型宣言
@@ -40,29 +41,28 @@
 //==============================================================================
 // 静的変数
 //==============================================================================
-CScene* CScene::m_pTop = NULL;
-CScene* CScene::m_pCur = NULL;
-int     CScene::m_numInstance = 0;
+CScene* CScene::m_pTop[ PRIORITY_TYPE_MAX ] = { NULL };
+CScene* CScene::m_pCur[ PRIORITY_TYPE_MAX ] = { NULL };
 
 //==============================================================================
-// 関数名 : CScene()
-// 引数   : void
+// 関数名 : CScene( int priority , OBJ_TYPE type )
+// 引数   : int priority  : 描画優先度
+//          OBJ_TYPE type : シーンタイプ
 // 戻り値 : void
-// 説明   : デフォルトコンストラクタ
+// 説明   : 引数付きコンストラクタ
 //==============================================================================
-CScene::CScene()
+CScene::CScene( int priority , OBJ_TYPE type )
 {
 	//--------------------------------------
 	// [ インスタンスをリストに登録する ]
 	//--------------------------------------
-	m_numInstance++;	// 登録総数増加
-
-	LinkList();			// リストへの登録処理
+	LinkList( priority );
 
 	//--------------------------------------
 	// [ 変数初期化 ]
 	//--------------------------------------
-	m_type = SCENE_TYPE_UNKNOWN;
+	m_priority = priority;
+	m_type     = type;
 }
 
 //==============================================================================
@@ -83,17 +83,19 @@ CScene::~CScene()
 //==============================================================================
 void CScene::UpdateAll( void )
 {
-	CScene *pCur = m_pTop;				// 現在参照しているポインタ
-	CScene *pNext;						// 次に参照するポインタ
-
-	while( pCur != NULL )				// リスト全てを参照するまで繰り返し
+	for( int i = 0 ; i < PRIORITY_TYPE_MAX ; i++ )
 	{
-		pNext = pCur->m_pNext;			// 次へのポインタを保持
-		pCur->Update();					// 更新処理の呼び出し
-		pCur = pNext;					// 次へのポインタを現在のポインタに格納
+		CScene *pCur = m_pTop[ i ];			// 現在参照しているポインタ
+		CScene *pNext;						// 次に参照するポインタ
+
+		while( pCur != NULL )				// リスト全てを参照するまで繰り返し
+		{
+			pNext = pCur->m_pNext;			// 次へのポインタを保持
+			pCur->Update();					// 更新処理の呼び出し
+			pCur = pNext;					// 次へのポインタを現在のポインタに格納
+		}
 	}
 }
-
 
 //==============================================================================
 // 関数名 : void DrawAll( void )
@@ -103,14 +105,17 @@ void CScene::UpdateAll( void )
 //==============================================================================
 void CScene::DrawAll( void )
 {
-	CScene *pCur = m_pTop;				// 現在参照しているポインタ
-	CScene *pNext;						// 次に参照するポインタ
-
-	while( pCur != NULL )				// リスト全てを参照するまで繰り返し
+	for( int i = 0 ; i < PRIORITY_TYPE_MAX ; i++ )
 	{
-		pNext = pCur->m_pNext;			// 次へのポインタを保持
-		pCur->Draw();					// 描画処理の呼び出し
-		pCur = pNext;					// 次へのポインタを現在のポインタに格納
+		CScene *pCur = m_pTop[ i ];			// 現在参照しているポインタ
+		CScene *pNext;						// 次に参照するポインタ
+
+		while( pCur != NULL )				// リスト全てを参照するまで繰り返し
+		{
+			pNext = pCur->m_pNext;			// 次へのポインタを保持
+			pCur->Draw();					// 描画処理の呼び出し
+			pCur = pNext;					// 次へのポインタを現在のポインタに格納
+		}
 	}
 }
 
@@ -122,15 +127,21 @@ void CScene::DrawAll( void )
 //==============================================================================
 void CScene::ReleaseAll( void )
 {
-	CScene *pCur = m_pTop;				// 現在参照しているポインタ
-	CScene *pNext;						// 次に参照するポインタ
-
-	while( pCur != NULL )				// リスト全てを参照するまで繰り返し
+	for( int i = 0 ; i < PRIORITY_TYPE_MAX ; i++ )
 	{
-		pNext = pCur->m_pNext;			// 次へのポインタを保持
-		pCur->Uninit();					// 終了処理の呼び出し
-		delete pCur;					// インスタンスの削除
-		pCur = pNext;					// 次へのポインタを現在のポインタに格納
+		CScene *pCur = m_pTop[ i ];			// 現在参照しているポインタ
+		CScene *pNext;						// 次に参照するポインタ
+
+		while( pCur != NULL )				// リスト全てを参照するまで繰り返し
+		{
+			pNext = pCur->m_pNext;			// 次へのポインタを保持
+			pCur->Uninit();					// 終了処理の呼び出し
+			delete pCur;					// インスタンスの削除
+			pCur = pNext;					// 次へのポインタを現在のポインタに格納
+		}
+
+		m_pTop[ i ] = NULL;					// 先頭ポインタのNULL埋め
+		m_pCur[ i ] = NULL;					// 末尾ポインタのNULL埋め
 	}
 }
 
@@ -142,58 +153,58 @@ void CScene::ReleaseAll( void )
 //==============================================================================
 void CScene::Release( void )
 {
-	this->Uninit();		// 終了処理呼び出し
-	UnlinkList();		// リストから解放
-	delete this;		// インスタンス削除
+	UnlinkList( m_priority );		// リストから解放
+	this->Uninit();					// 終了処理の呼び出し
+	delete this;					// インスタンス削除
 }
 
 //==============================================================================
-// 関数名 : void LinkList( void )
-// 引数   : void
+// 関数名 : void LinkList( int priority )
+// 引数   : int priority : 描画優先度
 // 戻り値 : void
 // 説明   : リストへインスタンスを登録する処理
 //==============================================================================
-void CScene::LinkList( void )
+void CScene::LinkList( int priority )
 {
 	// リストに初めて自身を登録するとき
-	if( m_pTop == NULL )
+	if( m_pTop[ priority ] == NULL )
 	{
-		m_pTop = this;							// 自身しかいない＝先頭にあたるため
+		m_pTop[ priority ] = this;				// 自身しかいない＝先頭にあたるため
 	}
 
-	if( m_pCur == NULL )
+	if( m_pCur[ priority ] == NULL )
 	{
-		m_pCur = this;							// 自身しかいない＝最後尾にあたるため
+		m_pCur[ priority ] = this;				// 自身しかいない＝最後尾にあたるため
 	}
 
 	// リストのリンク処理
-	m_pCur->m_pNext = this;						// 現在最後尾にあたる部分のNextを自身に設定
+	m_pCur[ priority ]->m_pNext = this;			// 現在最後尾にあたる部分のNextを自身に設定
 
-	if( m_pCur == this )
+	if( m_pCur[ priority ] == this )
 	{
 		m_pPrev = NULL;							// 自身しかいない＝前にリストが存在しないため
 	}
 	else
 	{
-		m_pPrev = m_pCur;						// 最後尾が自身になるため
+		m_pPrev = m_pCur[ priority ];			// 最後尾が自身になるため
 	}
 
-	m_pCur = this;								// 最後尾を自身に登録
+	m_pCur[ priority ] = this;					// 最後尾を自身に登録
 	m_pNext = NULL;								// 次はまだ存在しないため
 }
 
 //==============================================================================
-// 関数名 : void UnlinkList( void )
-// 引数   : void
+// 関数名 : void UnlinkList( int priority )
+// 引数   : int priority : 描画優先度
 // 戻り値 : void
 // 説明   : リストのインスタンスを削除する処理
 //==============================================================================
-void CScene::UnlinkList( void )
+void CScene::UnlinkList( int priority )
 {
 	// 前にあるインスタンスに対する処理
-	if( this == m_pTop )
+	if( this == m_pTop[ priority ] )
 	{
-		m_pTop = m_pNext;
+		m_pTop[ priority ] = m_pNext;
 	}
 	else
 	{
@@ -201,9 +212,9 @@ void CScene::UnlinkList( void )
 	}
 
 	// 次にあるインスタンスに対する処理
-	if( this == m_pCur )
+	if( this == m_pCur[ priority ] )
 	{
-		m_pCur = m_pPrev;
+		m_pCur[ priority ] = m_pPrev;
 	}
 	else
 	{

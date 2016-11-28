@@ -15,11 +15,11 @@
 //==============================================================================
 #include "manager.h"
 
-// システム部分派生クラスのインクルード
 #include "sceneGL.h"
 #include "lightGL.h"
 #include "soundAL.h"
 #include "editorCameraGL.h"
+#include "fade.h"
 
 // 各シーンのインクルード
 #include "sceneGLModel.h"
@@ -29,6 +29,10 @@
 #include "skyBox.h"
 #include "editorModel.h"
 #include "testBox.h"
+
+// 各モードのインクルード
+#include "title.h"
+#include "game.h"
 
 //==============================================================================
 // 列挙型宣言
@@ -65,6 +69,7 @@ CManager::CManager()
 {
 	m_pRenderer = NULL;
 	m_pCamera   = NULL;
+	m_pMode     = NULL;
 
 }
 
@@ -156,6 +161,10 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 
 	CLight::GetLight( LIGHT2 )->Enable();							// 有効化
 
+	//---------------------------------------------
+	// [ フェード処理の初期化 ]
+	//---------------------------------------------
+	CFade::Init();
 
 	//---------------------------------------------
 	// [ 各シーンの生成 ]
@@ -166,16 +175,21 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 
 	//CSceneGL3D::Create( "data\\TEXTURE\\filed00.jpg" );
 
-	//CSceneGL2D::Create( "data\\TEXTURE\\fighter00.png" );
+	//CSceneGL2D::Create( "data\\TEXTURE\\skyBox00.png" );
 
 	//CSceneGLModel::Create( "data\\MODEL\\miku_01.obj" );
 
-	CMotionEditModel::Create();
+	//CMotionEditModel::Create();
 
 	//---------------------------------------------
 	// [ デバッグプロシージャの生成 ]
 	//---------------------------------------------
 	CDebugProc::Create();
+
+	//---------------------------------------------
+	// [ 初期モードの生成 ]
+	//---------------------------------------------
+	CFade::FadeStart( new CGame , 120 );
 
 	//---------------------------------------------
 	// [ サウンドの生成 ]
@@ -226,9 +240,18 @@ void CManager::Uninit( void )
 	CLight::ReleaseAll();		// ライト解放処理
 
 	//---------------------------------------------
-	// [ 各シーンの解放処理 ]
+	// [ フェード処理の解放 ]
 	//---------------------------------------------
-	CScene::ReleaseAll();
+	CFade::Uninit();
+
+	//---------------------------------------------
+	// [ モードの解放 ]
+	//---------------------------------------------
+	if( m_pMode != NULL )
+	{
+		m_pMode->Release();
+		m_pMode = NULL;
+	}
 
 	//---------------------------------------------
 	// [ デバッグプロシージャの解放 ]
@@ -276,12 +299,15 @@ void CManager::Update( void )
 	//---------------------------------------------
 	// [ 各シーンの更新処理 ]
 	//---------------------------------------------
-	CScene::UpdateAll();
+	if( m_pMode != NULL )
+	{
+		m_pMode->Update();
+	}
 
 	//---------------------------------------------
-	// [ モデルビューアープロシージャの更新処理 ]
+	// [ フェード処理の更新 ]
 	//---------------------------------------------
-	//CModelViewerProc::GetModelViewerProc()->Update();
+	CFade::Update();
 
 	//---------------------------------------------
 	// [ デバッグプロシージャの更新処理 ]
@@ -313,12 +339,17 @@ void CManager::Draw( void )
 	{
 		if( m_pCamera != NULL )
 		{
-			m_pCamera->Set();		// カメラ行列の設定
+			m_pCamera->Set();			// カメラ行列の設定
 		}
 
-		CLight::SetLightAll();		// ライトの設定処理
+		CLight::SetLightAll();			// ライトの設定処理
 
-		CScene::DrawAll();
+		if( m_pMode != NULL )
+		{
+			m_pMode->Draw();			// 各シーン描画
+		}
+
+		CFade::Draw();					// フェード描画
 
 		//---------------------------------------------
 		// [ デバッグプロシージャの描画処理 ]
@@ -333,3 +364,44 @@ void CManager::Draw( void )
 	}
 }
 
+
+//==============================================================================
+// 関数名 : bool SetMode( CMode* pMode )
+// 引数   : CMode* pMode : 設定するモード
+// 戻り値 : bool型
+// 説明   : モード設定処理
+//==============================================================================
+bool CManager::SetMode( CMode* pMode )
+{
+	// エラーチェック
+	if( pMode == NULL )
+	{
+		MessageBox( NULL , "ErrorCode #0\n次のモードが設定されていません。\n" , "Error" , MB_OK | MB_ICONERROR );
+		return false;	// モードが設定されていない
+	}
+
+	// 現在設定されているモードの破棄
+	if( m_pMode != NULL )
+	{
+		m_pMode->Release();
+		m_pMode = NULL;
+	}
+
+	// 新しいモードの設定
+	m_pMode = pMode;
+
+	if( m_pMode->Init() == false )
+	{
+		m_pMode->Release();
+		m_pMode = NULL;
+
+		MessageBox( NULL , "ErrorCode #1\n初期化失敗しました。ゲームを終了します。\n" , "Error" , MB_OK | MB_ICONERROR );
+
+		exit( -1 );
+
+		return false;
+	}
+
+	// 全処理成功
+	return true;
+}

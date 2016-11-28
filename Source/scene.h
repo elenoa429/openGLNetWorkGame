@@ -1,5 +1,5 @@
 //==============================================================================
-// タイトル     :   描画用クラス
+// タイトル     :   シーンクラス
 // ファイル名   :   scene.h
 // 作成者       :   AT13B284 21 数藤凌哉
 // 作成日       :   2016/04/19
@@ -8,10 +8,6 @@
 //==============================================================================
 // 更新履歴: -2016/04/19 数藤凌哉
 //           ・制作開始
-//           -2016/06/06
-//           ・マルチプラットフォームに対応するために改良。メンバ変数を追加。
-//           -2016/06/20
-//           ・リスト管理機構を追加
 //==============================================================================
 
 //==============================================================================
@@ -22,23 +18,12 @@
 //==============================================================================
 // インクルードファイル
 //==============================================================================
-#include "commonUtility.h"
+#include "rendererDX.h"
 
 //==============================================================================
 // マクロ定義
 //==============================================================================
 #define LIMIT_INSTANCE	( 256 )					// リストに登録できるインスタンスの最大数
-
-typedef enum 
-{												/* ==シーンの種類== */
-	SCENE_TYPE_UNKNOWN = 0,							// 不定形( 困ったらこれで )
-	SCENE_TYPE_PLAYER,								// プレイヤー
-	SCENE_TYPE_ENEMY,								// エネミー
-	SCENE_TYPE_OBJ_MESH,							// メッシュオブジェクト
-	SCENE_TYPE_OBJ_BILLBOARD,						// ビルボードオブジェクト
-	SCENE_TYPE_MAX,									// 総数
-
-} SCENE_TYPE;
 
 //==============================================================================
 // 構造体宣言
@@ -50,70 +35,68 @@ typedef enum
 class CScene
 {
 	//---------------------------------------------
+	// [ 列挙型 ]
+	//---------------------------------------------
+public:
+	enum OBJ_TYPE
+	{												/* ==オブジェクトの種類== */
+		OBJ_TYPE_UNKNOWN = 0 ,							// 不定形( 困ったらこれで )
+		OBJ_TYPE_PLAYER ,								// プレイヤー
+		OBJ_TYPE_ENEMY ,								// エネミー
+		OBJ_TYPE_3D,									// 3Dオブジェクト
+		OBJ_TYPE_MESH ,									// メッシュオブジェクト
+		OBJ_TYPE_BILLBOARD ,							// ビルボードオブジェクト
+		OBJ_TYPE_UI,									// UIオブジェクト
+		OBJ_TYPE_MAX ,									// 総数
+	};
+
+	enum PRIORITY_TYPE
+	{												/* ==描画優先度の種類( 番号が若いほど先に描画する )== */
+		PRIORITY_TYPE_BG = 0,							// 背景系
+		PRIORITY_TYPE_3D,								// 一般3Dオブジェクト系
+		PRIORITY_TYPE_EFFECT,							// エフェクト系( 主にビルボードの加算合成エフェクトで利用 )
+		PRIORITY_TYPE_UI,								// 2DUI系
+		PRIORITY_TYPE_MAX,								// 総数
+	};
+
+	//---------------------------------------------
 	// [ メンバ関数 ]
 	//---------------------------------------------
 public:
-	// コンストラクタ
-	CScene();
-	
-	// デストラクタ
+	CScene( int priority = PRIORITY_TYPE_BG , OBJ_TYPE type = OBJ_TYPE_UNKNOWN );
 	~CScene();
 
-	// 登録されたインスタンス全ての更新処理
 	static void UpdateAll( void );
-
-	// 登録されたインスタンス全ての描画処理
 	static void DrawAll( void );
-
-	// 登録されたインスタンス全ての解放処理
 	static void ReleaseAll( void );
 
-	// 解放処理
 	void Release( void );
-
-	// 初期化処理
-	virtual bool Init( void ){ return false; }
-
-	// 終了処理
+	virtual bool Init( void ){ return true; }
 	virtual void Uninit( void ) = 0;
-
-	// 更新処理
 	virtual void Update( void ) = 0;
-
-	// 描画処理
 	virtual void Draw( void ) = 0;
 
-	// シーンの種類取得処理
-	SCENE_TYPE GetType( void ){ return m_type; }
+	static CScene* GetSceneTop( int priority ){ return m_pTop[ priority ]; }
 
-	// 次のシーンの取得
+	OBJ_TYPE GetType( void ){ return m_type; }
 	CScene* GetSceneNext( void ){ return m_pNext; }
 
-	// シーンリストの先頭取得
-	static CScene* GetSceneTop( void ){ return m_pTop; }
-
 private:
-	// リストの連結
-	void LinkList( void );
-
-	// リストの解放
-	void UnlinkList( void );
+	void LinkList( int priority );
+	void UnlinkList( int priority );
 
 	//---------------------------------------------
 	// [ メンバ変数 ]
 	//---------------------------------------------
-private:
-	static CScene* m_pTop;		// リストの先頭ポインタ
-	static CScene* m_pCur;		// リストの現在位置のポインタ
-
-	static int m_numInstance;	// 現在登録されているインスタンス数
-
-	CScene* m_pPrev;			// リストの前参照用ポインタ
-	CScene* m_pNext;			// リストの後参照用ポインタ
-
 protected:
-	SCENE_TYPE m_type;			// シーンのタイプ
+	static CScene* m_pTop[ PRIORITY_TYPE_MAX ];		// リストの先頭ポインタ
+	static CScene* m_pCur[ PRIORITY_TYPE_MAX ];		// リストの現在位置のポインタ
 
+	CScene* m_pPrev;								// リストの前参照用ポインタ
+	CScene* m_pNext;								// リストの後参照用ポインタ
+
+	OBJ_TYPE m_type;								// シーンのタイプ
+	int m_priority;									// 優先度
 };
 
 //==============================================================================

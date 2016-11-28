@@ -1,22 +1,27 @@
 //==============================================================================
-// タイトル     :   OpenGL用2D描画用クラス
-// ファイル名   :   sceneGL2D.cpp
+// タイトル     :   2D用数字表示クラス
+// ファイル名   :   number2D.cpp
 // 作成者       :   AT13B284 21 数藤凌哉
-// 作成日       :   2016/04/22
+// 作成日       :   2016/06/19
 //==============================================================================
 
 //==============================================================================
-// 更新履歴: -2016/04/22 数藤凌哉
+// 更新履歴: -2016/06/19 数藤凌哉
 //           ・制作開始
-//           -2016/05/09
-//           ・基本となる処理の追加
+//           -2016/11/21数藤凌哉
+//           ・OpenGL用に処理を一部変更
 //==============================================================================
 
 //==============================================================================
 // インクルードファイル
 //==============================================================================
-#include "sceneGL2D.h"
-#include "rendererGL.h"
+#include "number2D.h"
+#include "main.h"
+#include "rendererDX.h"
+
+//==============================================================================
+// ライブラリへのリンク設定
+//==============================================================================
 
 //==============================================================================
 // 列挙型宣言
@@ -39,71 +44,82 @@
 //==============================================================================
 
 //==============================================================================
-// 関数名 : CSceneGL2D
+// 静的変数
+//==============================================================================
+const int CNumber2D::m_vtxNum  = 4;			// 必要頂点数
+const int CNumber2D::m_primNum = 2;			// 必要プリミティブ数
+
+//==============================================================================
+// 関数名 : CNumber2D()
 // 引数   : void
 // 戻り値 : void
-// 説明   : デフォルトコンストラクタ
+// 説明   : コンストラクタ
 //==============================================================================
-CSceneGL2D::CSceneGL2D()
+CNumber2D::CNumber2D()
 {
-	m_pos      = VECTOR3( 0.0f , 0.0f , 0.0f );
-	m_rot      = VECTOR3( 0.0f , 0.0f , 0.0f );
-	m_size     = VECTOR3( 0.0f , 0.0f , 0.0f );
-	m_col      = COLOR_F32( 1.0f , 1.0f , 1.0f , 1.0f );
 	m_pTexture = NULL;
+	m_length   = 0.0f;
+	m_angle    = 0.0f;
 }
 
 //==============================================================================
-// 関数名 : ~CSceneGL2D
+// 関数名 : ~CNumber2D()
 // 引数   : void
 // 戻り値 : void
 // 説明   : デストラクタ
 //==============================================================================
-CSceneGL2D::~CSceneGL2D()
+CNumber2D::~CNumber2D()
 {
+
 }
 
 //==============================================================================
-// 関数名 : CSceneGL2D* Create( char* texPath )
-// 引数   : char* texPath : テクスチャファイルパス
-// 戻り値 : CSceneGL2D*型
+// 関数名 : CNumber2D* Create( VECTOR3 pos , VECTOR3 size , CTexture* pTexture )
+// 引数   : VECTOR3 pos        : 位置
+//          VECTOR3 size       : サイズ
+//          CTexture* pTexture : テクスチャへのポインタ
+// 戻り値 : bool型 : 処理結果
 // 説明   : 生成処理
 //==============================================================================
-CSceneGL2D* CSceneGL2D::Create( char* texPath )
+CNumber2D* CNumber2D::Create( VECTOR3 pos , VECTOR3 size , int texDivW , int texDivH , CTexture* pTexture )
 {
-	CSceneGL2D* pNewInstance = new CSceneGL2D;
+	CNumber2D* newInstance;
+	newInstance = new CNumber2D;
 
-	if( pNewInstance->Init( texPath ) == false )
+	if( newInstance->Init( pos , size , texDivW , texDivH , pTexture ) == false )
 	{
-		pNewInstance->Release();
-		pNewInstance = NULL;
+		newInstance->Release();
+		newInstance = NULL;
 	}
 
-	return pNewInstance;
+	return newInstance;
 }
 
 //==============================================================================
-// 関数名 : bool Init( char* texPath )
-// 引数   : void
-// 戻り値 : bool型
+// 関数名 : bool Init( VECTOR3 pos , VECTOR3 size , CTexture* pTexture )
+// 引数   : VECTOR3 pos             : 位置
+//          VECTOR3 size            : サイズ
+//          CTexture* pTexture : テクスチャへのポインタ
+// 戻り値 : bool型 : 処理結果
 // 説明   : 初期化処理
 //==============================================================================
-bool CSceneGL2D::Init( char* texPath )
+bool CNumber2D::Init( VECTOR3 pos , VECTOR3 size , int texDivW , int texDivH , CTexture* pTexture )
 {
-	//---------------------------------
-	// [ 値初期化 ]
-	//---------------------------------
-	m_pos  = VECTOR3( 100.0f , 100.0f , 0.0f );
-	m_rot  = VECTOR3( 0.0f , 0.0f , 0.0f );
-	m_size = VECTOR3( 100.0f , 100.0f , 0.0f );
+	// 基底の初期化処理を行う
+	CNumber::Init( texDivW , texDivH );
 
-	//---------------------------------
-	// [ テクスチャ読み込み処理 ]
-	//---------------------------------
-	CRenderer* pRenderer = GetManager()->GetRenderer();			// レンダラーの取得
-	pRenderer->CreateTexture( texPath , &m_pTexture );			// テクスチャ生成
+	// 座標情報の初期化
+	m_pos      = pos;
+	m_rot      = VECTOR3( 0.0f , 0.0f , 0.0f );
+	m_size     = size;
+	m_pTexture = pTexture;
 
-	return true;			// 処理成功
+	VECTOR3 halfSize = VECTOR3( m_size.x * 0.5f , m_size.y * 0.5f , m_size.z * 0.5f );
+
+	m_length = sqrtf( ( halfSize.x * halfSize.x ) + ( halfSize.y * halfSize.y ) );
+	m_angle = atan2f( m_size.x , m_size.y );
+
+	return true;	// 処理成功
 }
 
 //==============================================================================
@@ -112,14 +128,10 @@ bool CSceneGL2D::Init( char* texPath )
 // 戻り値 : void
 // 説明   : 終了処理
 //==============================================================================
-void CSceneGL2D::Uninit( void )
+void CNumber2D::Uninit( void )
 {
-	if( m_pTexture != NULL )
-	{
-		m_pTexture->Release();
-		delete m_pTexture;
-		m_pTexture = NULL;
-	}
+	// テクスチャは外部から設定するので、ここでは解放しない
+	m_pTexture = NULL;
 }
 
 //==============================================================================
@@ -128,9 +140,9 @@ void CSceneGL2D::Uninit( void )
 // 戻り値 : void
 // 説明   : 更新処理
 //==============================================================================
-void CSceneGL2D::Update( void )
+void CNumber2D::Update( void )
 {
-
+	
 }
 
 //==============================================================================
@@ -139,7 +151,7 @@ void CSceneGL2D::Update( void )
 // 戻り値 : void
 // 説明   : 描画処理
 //==============================================================================
-void CSceneGL2D::Draw( void )
+void CNumber2D::Draw( void )
 {
 	//---------------------------------
 	// [ 描画前設定 ]
@@ -147,12 +159,6 @@ void CSceneGL2D::Draw( void )
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA , GL_ONE_MINUS_SRC_ALPHA );
 	glDisable( GL_DEPTH_TEST );													// ZバッファーOFF
-
-	/*
-	glDisable( GL_LIGHTING );
-
-	glEnable( GL_ALPHA_TEST );
-	glAlphaFunc( GL_GREATER , 0.0f );*/
 
 	if( m_pTexture != NULL )
 	{
@@ -163,7 +169,7 @@ void CSceneGL2D::Draw( void )
 	// [ カメラ設定処理 ]
 	//---------------------------------
 	CCameraGL* pCamera = ( CCameraGL* )GetManager()->GetCamera();	// カメラ取得
-	pCamera->Set2D();			// 2Dカメラ設定
+	pCamera->Set2D();												// 2Dカメラ設定
 
 	//---------------------------------
 	// [ ポリゴン描画処理 ]
@@ -173,21 +179,21 @@ void CSceneGL2D::Draw( void )
 
 	glBegin( GL_TRIANGLE_STRIP );
 	{
-		glTexCoord2f( 0.0f , 1.0f );
-		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
-		glVertex3f( m_pos.x - halfX , m_pos.y - halfY , 0.0f );
+		glTexCoord2f( m_tex.x , m_tex.y );
+		glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
+		glVertex3f( m_pos.x - sinf( m_angle + m_rot.z ) * m_length , m_pos.y - cosf( m_angle + m_rot.z ) * m_length , 0.0f );
 
-		glTexCoord2f( 1.0f , 1.0f );
-		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
-		glVertex3f( m_pos.x + halfX , m_pos.y - halfY , 0.0f );
+		glTexCoord2f( m_tex.x + m_texLen.x , m_tex.y );
+		glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
+		glVertex3f( m_pos.x + sinf( m_angle - m_rot.z ) * m_length , m_pos.y - cosf( m_angle - m_rot.z ) * m_length , 0.0f );
 
-		glTexCoord2f( 0.0f , 0.0f );
-		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
-		glVertex3f( m_pos.x - halfX , m_pos.y + halfY , 0.0f );
+		glTexCoord2f( m_tex.x , m_tex.y - m_texLen.y );
+		glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
+		glVertex3f( m_pos.x - sinf( m_angle - m_rot.z ) * m_length , m_pos.y + cosf( m_angle - m_rot.z ) * m_length , 0.0f );
 
-		glTexCoord2f( 1.0f , 0.0f );
-		glColor4f( 1.0f , 1.0f , 1.0f , 1.0f );
-		glVertex3f( m_pos.x + halfX , m_pos.y + halfY , 0.0f );
+		glTexCoord2f( m_tex.x + m_texLen.x , m_tex.y - m_texLen.y );
+		glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
+		glVertex3f( m_pos.x + sinf( m_angle + m_rot.z ) * m_length , m_pos.y + cosf( m_angle + m_rot.z ) * m_length , 0.0f );
 	}
 	glEnd();
 
@@ -198,6 +204,27 @@ void CSceneGL2D::Draw( void )
 	glDisable( GL_BLEND );
 
 	glEnable( GL_DEPTH_TEST );													// ZバッファーON
-	
+
 	pCamera->End2D();															// 2Dカメラ終了設定
 }
+
+//==============================================================================
+// 関数名 : void SetSize( VECTOR3 size )
+// 引数   : void
+// 戻り値 : void
+// 説明   : サイズ設定処理
+//==============================================================================
+void CNumber2D::SetSize( VECTOR3 size )
+{
+	m_size = size;
+
+	// 対角線関連の算出
+	VECTOR3 halfSize = VECTOR3( m_size.x * 0.5f , m_size.y * 0.5f , m_size.z * 0.5f );
+
+	m_length = sqrtf( ( halfSize.x * halfSize.x ) + ( halfSize.y * halfSize.y ) );
+	m_angle = atan2f( m_size.x , m_size.y );
+
+}
+
+
+
