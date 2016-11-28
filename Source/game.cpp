@@ -22,6 +22,7 @@
 #include "result.h"
 #include "fade.h"
 #include "sceneGL2D.h"
+#include "timeCount.h"
 
 //==============================================================================
 // ƒ‰ƒCƒuƒ‰ƒŠ‚Ö‚ÌƒŠƒ“ƒNİ’è
@@ -59,6 +60,7 @@
 //==============================================================================
 CGame::CGame()
 {
+	m_pTiemCount = NULL;
 }
 
 //==============================================================================
@@ -87,6 +89,11 @@ bool CGame::Init( void )
 	//---------------------------------------------
 	CSkyBox::Create( "data\\TEXTURE\\skyBox00.png" );
 	CSceneGL2D::Create( "data\\TEXTURE\\sample00_RGB24.bmp" );
+	
+	m_pTiemCount = CTimeCount::Create( 4 , VECTOR3( SCREEN_WIDTH * 0.1f , SCREEN_HEIGHT * 0.1f , 0.0f ) , VECTOR3( SCREEN_WIDTH * 0.1f , SCREEN_WIDTH * 0.05f , 0.0f ) , 5 , 2 , "data\\TEXTURE\\number200.png" );
+	m_pTiemCount->SetColor( COLOR_F32( 0.5f , 0.5f , 0.5f , 1.0f ) );
+	m_pTiemCount->SetOutputLeftZeroEnable( false );
+	m_pTiemCount->SetTime( 1100 );
 
 	return true;
 }
