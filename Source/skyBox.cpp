@@ -57,6 +57,25 @@ CSkyBox::~CSkyBox()
 }
 
 //==============================================================================
+// 関数名 : CSkyBox* Create( char* texPath )
+// 引数   : char* texPath : テクスチャファイルパス
+// 戻り値 : CSkyBox*型
+// 説明   : 生成処理
+//==============================================================================
+CSkyBox* CSkyBox::Create( char* texPath )
+{
+	CSkyBox* pNewInstance = new CSkyBox;
+
+	if( pNewInstance->Init( texPath ) == false )
+	{
+		pNewInstance->Release();
+		pNewInstance = NULL;
+	}
+
+	return pNewInstance;
+}
+
+//==============================================================================
 // 関数名 : bool Init( char* texPath )
 // 引数   : char* texPath : テクスチャファイルパス
 // 戻り値 : void
@@ -64,19 +83,13 @@ CSkyBox::~CSkyBox()
 //==============================================================================
 bool CSkyBox::Init( char* texPath )
 {
-//	CSceneGL3D::Init( texPath );
+	CSceneGL3D::Init( texPath );
 
 	m_size = VECTOR3( 50000.0f , 50000.0f , 50000.0f );
 	m_DivTexU = 4;
 	m_DivTexV = 3;
 	m_texUnitSize.x = 1.0f / ( float )m_DivTexU;
 	m_texUnitSize.y = 1.0f / ( float )m_DivTexV;
-
-	//---------------------------------
-	// [ テクスチャ読み込み処理 ]
-	//---------------------------------
-	CRenderer* pRenderer = GetManager()->GetRenderer();		// レンダラーの取得
-	pRenderer->CreateTexture( texPath , &m_pTexture );		// テクスチャ生成
 
 	return true;		// 処理成功
 }
@@ -92,7 +105,6 @@ void CSkyBox::Uninit( void )
 	if( m_pTexture != NULL )
 	{
 		m_pTexture->Release();
-		delete m_pTexture;
 		m_pTexture = NULL;
 	}
 
@@ -192,117 +204,117 @@ void CSkyBox::Draw( void )
 	{
 		/* ==0== */
 		{
-			glTexCoord2f( texUPos( 2 ) , texVPos( 3 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , -sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(0));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, -sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 2 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , -sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, -sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 3 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , -sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(0));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, -sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , -sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, -sizeHalfY, -sizeHalfZ);
 
 		}
 
 		/* ==1== */
 		{
-			glTexCoord2f( texUPos( 3 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , -sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, -sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , +sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, +sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 4 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , -sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(4), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, -sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 4 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , +sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(4), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, +sizeHalfY, +sizeHalfZ);
 		}
 
 		/* ==2== */
 		{
-			glTexCoord2f( texUPos( 0 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , -sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(0), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, -sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 0 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , +sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(0), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, +sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 1 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , -sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(1), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, -sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 1 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , +sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(1), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, +sizeHalfY, +sizeHalfZ);
 		}
 
 		/* ==3== */
 		{
-			glTexCoord2f( texUPos( 1 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , -sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(1), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, -sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 1 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , +sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(1), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, +sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 2 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , -sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, -sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 2 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , +sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, +sizeHalfY, -sizeHalfZ);
 		}
 
 		/* ==4== */
 		{
-			glTexCoord2f( texUPos( 2 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , -sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, -sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 2 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , +sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, +sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 2 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , -sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(1));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, -sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , +sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, +sizeHalfY, -sizeHalfZ);
 		}
 
 		/* ==5== */
 		{
-			glTexCoord2f( texUPos( 2 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , +sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, +sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 2 ) , texVPos( 0 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( -sizeHalfX , +sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(2), texVPos(3));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(-sizeHalfX, +sizeHalfY, +sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 1 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , +sizeHalfY , -sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(2));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, +sizeHalfY, -sizeHalfZ);
 
-			glTexCoord2f( texUPos( 3 ) , texVPos( 0 ) );
-			glColor4f( m_col.r , m_col.g , m_col.b , m_col.a );
-			glVertex3f( +sizeHalfX , +sizeHalfY , +sizeHalfZ );
+			glTexCoord2f(texUPos(3), texVPos(3));
+			glColor4f(m_col.r, m_col.g, m_col.b, m_col.a);
+			glVertex3f(+sizeHalfX, +sizeHalfY, +sizeHalfZ);
 		}
 	}
 	glEnd();

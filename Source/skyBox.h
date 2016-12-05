@@ -39,6 +39,8 @@ public:
 	CSkyBox();								// デフォルトコンストラクタ
 	~CSkyBox();								// デストラクタ
 
+	static CSkyBox* Create( char* texPath );
+
 	virtual bool Init( char* texPath );		// 初期化処理
 	virtual void Uninit( void );			// 終了処理
 	virtual void Update( void );			// 更新処理

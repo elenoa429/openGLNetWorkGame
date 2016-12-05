@@ -112,10 +112,10 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 	//---------------------------------------------
 	// [ カメラの生成 ]
 	//---------------------------------------------
-	m_pCamera = new CEditorCameraGL;
+	m_pCamera = new CCameraGL;
 	m_pCamera->Init( VECTOR3( 0.0f , 3.0f , 5.0f ) );
 
-	//m_pCamera->Init( D3DXVECTOR3( 0.0f , 600.0f , -1200.0f ) );
+	//m_pCamera->Init( VECTOR3( 0.0f , 600.0f , -1200.0f ) );
 
 	//---------------------------------------------
 	// [ ライトの生成 ]
@@ -194,7 +194,7 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 	//---------------------------------------------
 	// [ サウンドの生成 ]
 	//---------------------------------------------
-	//CSound* pSound = CSoundAL::Create( 64 );		// サウンド処理生成
+	CSound* pSound = CSoundAL::Create( 64 );		// サウンド処理生成
 
 	//pSound->Play( pSound->SOUND_LABEL_BGM_TEST00 );
 

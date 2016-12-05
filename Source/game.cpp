@@ -23,6 +23,7 @@
 #include "fade.h"
 #include "sceneGL2D.h"
 #include "timeCount.h"
+#include "player.h"
 
 //==============================================================================
 // ライブラリへのリンク設定
@@ -95,6 +96,10 @@ bool CGame::Init( void )
 	m_pTiemCount->SetOutputLeftZeroEnable( false );
 	m_pTiemCount->SetTime( 1100 );
 
+	CPlayer::Create( CCharcter::CHARCTER_TYPE_RABBITS );
+	
+	//CSoundAL::GetSound()->Play(CSound::SOUND_LABEL_BGM_TEST00);
+
 	return true;
 }
 
@@ -109,6 +114,7 @@ void CGame::Uninit( void )
 	//---------------------------------------------
 	// [ 各シーンの解放処理 ]
 	//---------------------------------------------
+	CSoundAL::GetSound()->Stop();
 	CScene::ReleaseAll();
 }
 
@@ -130,6 +136,12 @@ void CGame::Update( void )
 	//---------------------------------------------
 	CInput* pInput = CInput::GetInput( INPUT_TYPE_DX_KEYBOARD );
 
+	bool isTriggerSpace = false;
+
+	if (pInput != NULL) {
+		isTriggerSpace = pInput->GetTrigger(DIK_SPACE);
+	}
+
 	if( pInput != NULL )
 	{
 		if( pInput->GetTrigger( DIK_RETURN ) )
@@ -138,6 +150,10 @@ void CGame::Update( void )
 		}
 	}
 	
+	if (isTriggerSpace)
+	{
+		CSoundAL::GetSound()->Play(CSound::SOUND_LABEL_SE_TEST00);
+	}
 }
 
 //==============================================================================

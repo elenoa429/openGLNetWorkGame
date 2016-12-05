@@ -57,12 +57,13 @@ public:
 		HELTH_DEAD,
 	};
 
-	enum TYPE
+	enum CHARCTER_TYPE
 	{
-		TYPE_DOG = 0,
-		TYPE_CAT,
-		TYPE_PANDA,
-		TYPE_PENGUIN,
+		CHARCTER_TYPE_RABBITS = 0,
+		CHARCTER_TYPE_CAT,
+		CHARCTER_TYPE_PANDA,
+		CHARCTER_TYPE_PENGUIN,
+		CHARCTER_TYPE_MAX,
 	};
 
 	//---------------------------------------------
@@ -72,7 +73,7 @@ public:
 	CCharcter();
 	virtual ~CCharcter();
 
-	virtual bool Init( TYPE type );
+	virtual bool Init( CHARCTER_TYPE type );
 	virtual void Uninit();
 	virtual void Update();
 	virtual void Draw();
@@ -89,7 +90,7 @@ protected:
 	VECTOR3 m_rot;
 	VECTOR3 m_scl;
 
-	TYPE m_type;								// プレイヤーの種類。見た目を決めるもの。
+	CHARCTER_TYPE m_type;						// プレイヤーの種類。見た目を決めるもの。
 	int m_id;									// プレイヤーID。～Pのこと。
 	int m_life;									// ライフ。残機のこと。
 
