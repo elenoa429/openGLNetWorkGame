@@ -51,7 +51,8 @@
 //==============================================================================
 CCharcter::CCharcter()
 {
-
+	m_pModelManager = NULL;
+	m_pMotion = NULL;
 }
 
 //==============================================================================
@@ -66,15 +67,31 @@ CCharcter::~CCharcter()
 }
 
 //==============================================================================
-// 関数名 : bool Init( TYPE type )
+// 関数名 : bool Init( CHARCTER_TYPE type )
 // 引数   : void
 // 戻り値 : bool型 : 成功判定
 // 説明   : 初期化処理
 //==============================================================================
-bool CCharcter::Init( TYPE type )
+bool CCharcter::Init( CHARCTER_TYPE type )
 {
+	char* pModelFilePath[ CHARCTER_TYPE_MAX ] = {
+		{ "data\\MODEL\\playerRabbits.obj" },		// ウサギ
+		{ "data\\MODEL\\playerCats.obj" },			// 猫
+		{ "data\\MODEL\\playerBears.obj" },			// パンダ
+		{ "data\\MODEL\\playerPenguins.obj" },		// ペンギン
+	};
+
+	char* pMaterialFilePath[ CHARCTER_TYPE_MAX ] = {
+		{ "data\\MODEL\\playerRabbits.mtl" },		// ウサギ
+		{ "data\\MODEL\\playerCats.mtl" },			// 猫
+		{ "data\\MODEL\\playerBears.mtl" },			// パンダ
+		{ "data\\MODEL\\playerPenguins.mtl" },		// ペンギン
+	};
+
 	// モデルワーク生成処理
-	m_pModelManager = CParentModelManagerGL::Create();
+	//m_pModelManager = CParentModelManagerGL::Create( pModelFilePath[ 0 ] , pMaterialFilePath[ 0 ] );
+	//m_pModelManager = CParentModelManagerGL::Create( "data\\MODEL\\miku_01.obj" , "data\\MODEL\\miku_01.mtl" );
+	
 
 	if( m_pModelManager == NULL )
 	{
@@ -82,15 +99,15 @@ bool CCharcter::Init( TYPE type )
 	}
 
 	// モーション生成
-	m_pMotion = CMotionGL::Create( "data\\ANIMATION\\miku_01_01.anm" );
+	//m_pMotion = CMotionGL::Create( "data\\ANIMATION\\miku_01_01.anm" );
 
-	if( m_pMotion == NULL )
-	{
-		return false;
-	}
+	//if( m_pMotion == NULL )
+	//{
+	//	return false;
+	//}
 
 	// 処理成功
-	return false;
+	return true;
 }
 
 //==============================================================================

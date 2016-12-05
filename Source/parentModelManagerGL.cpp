@@ -53,7 +53,7 @@
 //==============================================================================
 CParentModelManagerGL::CParentModelManagerGL()
 {
-
+	m_pTexture = NULL;
 }
 
 //==============================================================================
@@ -68,16 +68,17 @@ CParentModelManagerGL::~CParentModelManagerGL()
 }
 
 //==============================================================================
-// 関数名 : CParentModelManagerGL* Create( void )
-// 引数   : void
+// 関数名 : CParentModelManagerGL* Create( char* objFilePath , char* mtlFilePath )
+// 引数   : char* objFilePath : objファイルのパス
+//          char* mtlFilePath : mtlファイルのパス
 // 戻り値 : CParentModelManagerGL*型
 // 説明   : 生成処理
 //==============================================================================
-CParentModelManagerGL* CParentModelManagerGL::Create( void )
+CParentModelManagerGL* CParentModelManagerGL::Create( char* objFilePath , char* mtlFilePath )
 {
 	CParentModelManagerGL* pNewInstance = new CParentModelManagerGL;
 
-	if( pNewInstance->Init() == false )
+	if( pNewInstance->Init( objFilePath , mtlFilePath ) == false )
 	{
 		pNewInstance->Release();
 		pNewInstance = NULL;
@@ -99,12 +100,13 @@ void CParentModelManagerGL::Release( void )
 }
 
 //==============================================================================
-// 関数名 : bool Init( void )
-// 引数   : void
+// 関数名 : bool Init( char* objFilePath , char* mtlFilePath )
+// 引数   : char* objFilePath : objファイルのパス
+//          char* mtlFilePath : mtlファイルのパス
 // 戻り値 : bool型
 // 説明   : 初期化処理
 //==============================================================================
-bool CParentModelManagerGL::Init( void )
+bool CParentModelManagerGL::Init( char* objFilePath , char* mtlFilePath )
 {
 	CModel* pModel;
 	DWORD numMat;
@@ -114,7 +116,7 @@ bool CParentModelManagerGL::Init( void )
 	//---------------------------------
 	CRenderer* pRenderer = GetManager()->GetRenderer();										// レンダラーの取得
 
-	pRenderer->CreateModel( "data\\MODEL\\miku_01.obj" , NULL , &numMat , &pModel );		// モデル生成
+	pRenderer->CreateModel( objFilePath , NULL , &numMat , &pModel );		// モデル生成
 
 	//---------------------------------
 	// [ 親子関係設定処理 ]
@@ -140,7 +142,7 @@ bool CParentModelManagerGL::Init( void )
 	//---------------------------------------------
 	CLoader* pLoader = new CLoader;
 
-	pLoader->MaterialLoad( "data\\MODEL\\miku_01.mtl" , &m_pMat );
+	pLoader->MaterialLoad( mtlFilePath , &m_pMat );
 
 	delete pLoader;
 	pLoader = NULL;
@@ -148,7 +150,7 @@ bool CParentModelManagerGL::Init( void )
 	//---------------------------------
 	// [ テクスチャ読み込み処理 ]
 	//---------------------------------
-	pRenderer->CreateTexture( "data\\MODEL\\miku_01.bmp" , &m_pTexture );	// テクスチャ生成
+	//pRenderer->CreateTexture( "data\\MODEL\\miku_01.bmp" , &m_pTexture );	// テクスチャ生成
 
 	return true;
 }
