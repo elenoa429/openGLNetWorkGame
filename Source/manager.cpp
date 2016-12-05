@@ -113,9 +113,9 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 	// [ ƒJƒƒ‰‚Ì¶¬ ]
 	//---------------------------------------------
 	m_pCamera = new CCameraGL;
-	m_pCamera->Init( VECTOR3( 0.0f , 3.0f , 5.0f ) );
+	//m_pCamera->Init( VECTOR3( 0.0f , 3.0f , 5.0f ) );
 
-	//m_pCamera->Init( VECTOR3( 0.0f , 600.0f , -1200.0f ) );
+	m_pCamera->Init( VECTOR3( 0.0f , 600.0f , -1200.0f ) );
 
 	//---------------------------------------------
 	// [ ƒ‰ƒCƒg‚Ì¶¬ ]

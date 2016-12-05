@@ -90,8 +90,7 @@ bool CCharcter::Init( CHARCTER_TYPE type )
 
 	// ƒ‚ƒfƒ‹ƒ[ƒN¶¬ˆ—
 	//m_pModelManager = CParentModelManagerGL::Create( pModelFilePath[ 0 ] , pMaterialFilePath[ 0 ] );
-	//m_pModelManager = CParentModelManagerGL::Create( "data\\MODEL\\miku_01.obj" , "data\\MODEL\\miku_01.mtl" );
-	
+	m_pModelManager = CParentModelManagerGL::Create( "data\\MODEL\\miku_01.obj" , "data\\MODEL\\miku_01.mtl" );
 
 	if( m_pModelManager == NULL )
 	{

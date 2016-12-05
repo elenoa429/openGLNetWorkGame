@@ -138,7 +138,7 @@ bool CSceneGLModel::Init( char* modelPath )
 	//---------------------------------------------
 	CLoader* pLoader = new CLoader;
 
-	pLoader->MaterialLoad( "data\\MODEL\\miku_01.mtl" , &m_pMat );
+	//pLoader->MaterialLoad( "data\\MODEL\\miku_01.mtl" , &m_pMat );
 
 	delete pLoader;
 	pLoader = NULL;
@@ -146,7 +146,7 @@ bool CSceneGLModel::Init( char* modelPath )
 	//---------------------------------
 	// [ テクスチャ読み込み処理 ]
 	//---------------------------------
-	pRenderer->CreateTexture( "data\\MODEL\\miku_01.bmp" , &m_pTexture );	// テクスチャ生成
+	//pRenderer->CreateTexture( "data\\MODEL\\miku_01.bmp" , &m_pTexture );	// テクスチャ生成
 
 	return true;		// 処理成功
 }

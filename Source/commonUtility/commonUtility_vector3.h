@@ -38,6 +38,16 @@ public:
 	VECTOR3( float x , float y , float z );
 	~VECTOR3();
 
+	VECTOR3 operator - ( const VECTOR3& v ) const
+	{
+		return VECTOR3( x - v.x , y - v.y , z - v.z );
+	}
+
+	VECTOR3 operator * ( float f ) const
+	{
+		return VECTOR3( x * f , y * f , z * f );
+	}
+
 	/* ===ƒƒ“ƒo•Ï”=== */
 public:
 	union
