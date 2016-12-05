@@ -47,10 +47,10 @@ public:
 	CParentModelManagerGL();
 	~CParentModelManagerGL();
 
-	static CParentModelManagerGL* Create( void );
+	static CParentModelManagerGL* Create( char* objFilePath , char* mtlFilePath );
 
 	void Release( void );
-	bool Init( void );
+	bool Init( char* objFilePath , char* mtlFilePath );
 	void Uninit( void );
 	void Update( void );
 	void Draw( MATRIX* pMtxParent );

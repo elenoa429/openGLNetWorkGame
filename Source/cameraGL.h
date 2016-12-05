@@ -65,8 +65,8 @@ public:
 	VECTOR3 GetPosV( void ){ return m_posV; }
 	VECTOR3 GetPosR( void ){ return m_posR; }
 	VECTOR3 GetRot( void ){ return m_rot; }
-	MATRIX GetMtxProj( void );
-	MATRIX GetMtxView( void );
+	//MATRIX GetMtxProj( void );
+	//MATRIX GetMtxView( void );
 
 	// ê›íËèàóùån
 	void SetPosV( VECTOR3 posV ){ m_posV = posV; }

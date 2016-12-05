@@ -44,9 +44,9 @@ public:
 	CPlayer();
 	~CPlayer();
 
-	static CPlayer* Create();
+	static CPlayer* Create( CHARCTER_TYPE type );
 
-	bool Init();
+	bool Init( CHARCTER_TYPE type );
 	void Uninit();
 	void Update();
 	void Draw();

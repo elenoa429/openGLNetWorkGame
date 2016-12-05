@@ -66,16 +66,16 @@ CPlayer::~CPlayer()
 }
 
 //==============================================================================
-// ä÷êîñº : CPlayer* Create()
-// à¯êî   : void
+// ä÷êîñº : CPlayer* Create( CHARCTER_TYPE type )
+// à¯êî   : TYPE type : 
 // ñﬂÇËíl : CPlayer*å^
 // ê‡ñæ   : ê∂ê¨èàóù
 //==============================================================================
-CPlayer* CPlayer::Create()
+CPlayer* CPlayer::Create( CHARCTER_TYPE type )
 {
 	CPlayer* pNewInstance = new CPlayer;
 
-	if( pNewInstance->Init() == false )
+	if( pNewInstance->Init( type ) == false )
 	{
 		pNewInstance->Release();
 		pNewInstance = NULL;
@@ -85,13 +85,18 @@ CPlayer* CPlayer::Create()
 }
 
 //==============================================================================
-// ä÷êîñº : bool Init()
+// ä÷êîñº : bool Init( CHARCTER_TYPE type )
 // à¯êî   : void
 // ñﬂÇËíl : boolå^ : ê¨å˜îªíË
 // ê‡ñæ   : èâä˙âªèàóù
 //==============================================================================
-bool CPlayer::Init()
+bool CPlayer::Init( CHARCTER_TYPE type )
 {
+	if( CCharcter::Init( type ) == false )
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -103,7 +108,7 @@ bool CPlayer::Init()
 //==============================================================================
 void CPlayer::Uninit()
 {
-
+	CCharcter::Uninit();
 }
 
 //==============================================================================
@@ -114,6 +119,7 @@ void CPlayer::Uninit()
 //==============================================================================
 void CPlayer::Update( void )
 {
+	CCharcter::Update();
 }
 
 //==============================================================================
@@ -124,6 +130,7 @@ void CPlayer::Update( void )
 //==============================================================================
 void CPlayer::Draw( void )
 {
+	CCharcter::Draw();
 }
 
 //==============================================================================
