@@ -123,7 +123,7 @@ void CSkyBox::Update( void )
 
 	m_pos = pCamera->GetPosV();
 
-	m_rot.y += 0.001f;
+	//m_rot.y += 0.001f;
 
 	if( m_rot.y > PI )
 	{

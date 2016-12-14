@@ -116,9 +116,9 @@ bool CSceneGLModel::Init( char* modelPath )
 	//---------------------------------
 	CRenderer* pRenderer = GetManager()->GetRenderer();						// レンダラーの取得
 
-	m_pos = VECTOR3( 0.0f , 1000.0f , 0.0f );
+	m_pos = VECTOR3( 0.0f , 0.0f , 0.0f );
 	m_rot = VECTOR3( 0.0f , 0.0f , 0.0f );
-	m_scl = VECTOR3( 1000.0f , 1000.0f , 1000.0f );
+	m_scl = VECTOR3( 1.0f , 1.0f , 1.0f );
 	m_nor = VECTOR3( 0.0f , 1.0f , 0.0f );
 	m_size = VECTOR3( 1.0f , 0.0f , 1.0f );
 	m_col = COLOR_F32( 1.0f , 1.0f , 1.0f , 1.0f );
@@ -138,7 +138,7 @@ bool CSceneGLModel::Init( char* modelPath )
 	//---------------------------------------------
 	CLoader* pLoader = new CLoader;
 
-	pLoader->MaterialLoad( "data\\MODEL\\miku_01.mtl" , &m_pMat );
+	//pLoader->MaterialLoad( "data\\MODEL\\miku_01.mtl" , &m_pMat );
 
 	delete pLoader;
 	pLoader = NULL;
@@ -146,7 +146,7 @@ bool CSceneGLModel::Init( char* modelPath )
 	//---------------------------------
 	// [ テクスチャ読み込み処理 ]
 	//---------------------------------
-	pRenderer->CreateTexture( "data\\MODEL\\miku_01.bmp" , &m_pTexture );	// テクスチャ生成
+	//pRenderer->CreateTexture( "data\\MODEL\\miku_01.bmp" , &m_pTexture );	// テクスチャ生成
 
 	return true;		// 処理成功
 }
@@ -430,20 +430,28 @@ void CSceneGLModel::Draw( void )
 	//---------------------------------
 	// [ ワールドマトリクス算出 ]
 	//---------------------------------
-	MATRIX mtxScl , mtxRot , mtxTrans;
+	glTranslatef( m_pos.x , m_pos.y , m_pos.z );
 
-	MatrixIdentity( &m_mtxWorld );
+	glRotatef( RadToDeg( m_rot.z ) , 0.0f , 0.0f , 1.0f );
+	glRotatef( RadToDeg( m_rot.y ) , 0.0f , 1.0f , 0.0f );
+	glRotatef( RadToDeg( m_rot.x ) , 1.0f , 0.0f , 0.0f );
 
-	MatrixScaling( &mtxScl , m_scl.x , m_scl.y , m_scl.z );
-	MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxScl );
+	glScalef( m_scl.x , m_scl.y , m_scl.z );
 
-	MatrixRotationYawPitchRoll( &mtxRot , m_rot.y , m_rot.x , m_rot.z );
-	MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxRot );
-
-	MatrixTranslation( &mtxTrans , m_pos.x , m_pos.y , m_pos.z );
-	MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxTrans );
-
-	glMultMatrixf( m_mtxWorld.m );
+	//MATRIX mtxScl , mtxRot , mtxTrans;
+	//
+	//MatrixIdentity( &m_mtxWorld );
+	//
+	//MatrixScaling( &mtxScl , m_scl.x , m_scl.y , m_scl.z );
+	//MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxScl );
+	//
+	//MatrixRotationYawPitchRoll( &mtxRot , m_rot.y , m_rot.x , m_rot.z );
+	//MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxRot );
+	//
+	//MatrixTranslation( &mtxTrans , m_pos.x , m_pos.y , m_pos.z );
+	//MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxTrans );
+	//
+	//glMultMatrixf( m_mtxWorld.m );
 
 	//---------------------------------
 	// [ 描画処理 ]

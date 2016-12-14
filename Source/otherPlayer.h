@@ -44,9 +44,9 @@ public:
 	COtherPlayer();
 	~COtherPlayer();
 
-	static COtherPlayer* Create();
+	static COtherPlayer* Create( int charcterType );
 
-	bool Init();
+	bool Init( int charcterType );
 	void Uninit();
 	void Update();
 	void Draw();

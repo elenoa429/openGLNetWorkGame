@@ -14,6 +14,10 @@
 // インクルードファイル
 //==============================================================================
 #include "charcter.h"
+#include "game.h"
+#include "cameraGL.h"
+#include <math.h>
+#include "wall.h"
 
 //==============================================================================
 // ライブラリへのリンク設定
@@ -51,8 +55,20 @@
 //==============================================================================
 CCharcter::CCharcter()
 {
-	m_pModelManager = NULL;
-	m_pMotion = NULL;
+	m_pos = VECTOR3( 0.0f , 0.0f , 0.0f );
+	m_rot = VECTOR3( 0.0f , 0.0f , 0.0f );
+	m_scl = VECTOR3( 1.0f , 1.0f , 1.0f );
+	m_gensui = VECTOR3( 0.025f , 0.025f , 0.025f );
+
+	m_id = 0;
+	m_life = 0;
+
+	m_pBoundingSphere = NULL;
+
+	m_pModel = NULL;
+	m_numMat = 0;
+	m_pMat   = NULL;
+
 }
 
 //==============================================================================
@@ -67,13 +83,42 @@ CCharcter::~CCharcter()
 }
 
 //==============================================================================
-// 関数名 : bool Init( CHARCTER_TYPE type )
+// 関数名 : bool Init( int charcterType )
 // 引数   : void
 // 戻り値 : bool型 : 成功判定
 // 説明   : 初期化処理
 //==============================================================================
-bool CCharcter::Init( CHARCTER_TYPE type )
+bool CCharcter::Init( int charcterType )
 {
+	m_pos = VECTOR3(0.0f, 0.0f, 0.0f);			// 位置
+	m_rot = VECTOR3(0.0f, 0.0f, 0.0f);			// 角度
+	m_mov = VECTOR3(0.0f, 0.0f, 0.0f);			// 移動力
+	m_rotMokuhyou = VECTOR3(0.0f, 0.0f, 0.0f);	// 目標角度
+	m_spinAxcel = 0.0f;							// 回転の加速度
+	m_spinGensui = 8.0f;						// 回転の減衰
+	m_life = 3;									// ライフ
+	//m_type = type;								// 種類
+	m_actionState = ACTION_NONE;				// アクションなし
+
+	m_Width = 4.0f;
+	m_Height = 4.0f;
+	m_Depth = 4.0f;
+	
+	switch( charcterType )
+	{
+		case CCharcter::CHARCTER_TYPE_RABBITS: m_type = CCharcter::CHARCTER_TYPE_RABBITS; break;
+		case CCharcter::CHARCTER_TYPE_CAT:     m_type = CCharcter::CHARCTER_TYPE_CAT;     break;
+		case CCharcter::CHARCTER_TYPE_PANDA:   m_type = CCharcter::CHARCTER_TYPE_PANDA;   break;
+		case CCharcter::CHARCTER_TYPE_PENGUIN: m_type = CCharcter::CHARCTER_TYPE_PENGUIN; break;
+
+		default:
+		{
+			m_type = CCharcter::CHARCTER_TYPE_RABBITS;
+			CDebugConsole::GetInstance()->Print( "Charcter Type Range Over\nvalue : %d\n" , charcterType );
+			break;
+		}
+	}
+
 	char* pModelFilePath[ CHARCTER_TYPE_MAX ] = {
 		{ "data\\MODEL\\playerRabbits.obj" },		// ウサギ
 		{ "data\\MODEL\\playerCats.obj" },			// 猫
@@ -88,12 +133,16 @@ bool CCharcter::Init( CHARCTER_TYPE type )
 		{ "data\\MODEL\\playerPenguins.mtl" },		// ペンギン
 	};
 
-	// モデルワーク生成処理
-	//m_pModelManager = CParentModelManagerGL::Create( pModelFilePath[ 0 ] , pMaterialFilePath[ 0 ] );
-	//m_pModelManager = CParentModelManagerGL::Create( "data\\MODEL\\miku_01.obj" , "data\\MODEL\\miku_01.mtl" );
-	
+	//---------------------------------
+	// [ モデル読み込み処理 ]
+	//---------------------------------
+	CRenderer* pRenderer = GetManager()->GetRenderer();
 
-	if( m_pModelManager == NULL )
+	pRenderer->CreateModel( pModelFilePath[ m_type ] , NULL , &m_numMat , &m_pModel );		// モデル生成
+	
+	//m_pModelManager = CParentModelManagerGL::Create( "data\\MODEL\\miku_01.obj" , "data\\MODEL\\miku_01.mtl" );
+
+	if( m_pModel == NULL )
 	{
 		return false;
 	}
@@ -105,6 +154,11 @@ bool CCharcter::Init( CHARCTER_TYPE type )
 	//{
 	//	return false;
 	//}
+
+	//----------------------------------------------
+	// [ 球当たり判定生成 ]
+	//----------------------------------------------
+	m_pBoundingSphere = CCollider3DSphere::Create( m_pos , 4.0f );		// TODO : 半径が決め打ちなので、のちほど修正予定？
 
 	// 処理成功
 	return true;
@@ -118,18 +172,16 @@ bool CCharcter::Init( CHARCTER_TYPE type )
 //==============================================================================
 void CCharcter::Uninit()
 {
-	// モデル処理の解放
-	if( m_pModelManager != NULL )
+	if( m_pMat != NULL )
 	{
-		m_pModelManager->Release();
-		m_pModelManager = NULL;
+		m_pMat->Release();
+		m_pMat = NULL;
 	}
 
-	// モーション処理解放
-	if( m_pMotion != NULL )
+	if( m_pBoundingSphere != NULL )
 	{
-		m_pMotion->Release();
-		m_pMotion = NULL;
+		m_pBoundingSphere->Release();
+		m_pBoundingSphere = NULL;
 	}
 }
 
@@ -141,18 +193,75 @@ void CCharcter::Uninit()
 //==============================================================================
 void CCharcter::Update( void )
 {
-	//---------------------------------------------------
-	// [ モーション処理 ]
-	//---------------------------------------------------
-	if( m_pMotion != NULL )
+	/*動かす
+	**********************************************/
+	m_pos.x += m_mov.x;
+	m_pos.z += m_mov.z;
+
+	/*移動量を減衰
+	*************************************************/
+	m_mov.x += ( 0.0f - m_mov.x ) * m_gensui.x;
+	m_mov.z += ( 0.0f - m_mov.z ) * m_gensui.z;
+
+	// 当たり判定更新
+	m_pBoundingSphere->SetPos( m_pos );
+
+	// 他のプレイヤーとの当たり判定処理
+	CGame* pGameMode = dynamic_cast< CGame* >( GetManager()->GetMode() );
+
+	if( pGameMode != NULL )
 	{
-		m_pMotion->Update();
-		m_pMotion->SetMotionData( m_pModelManager );
+		for( int i = 0 ; i < PLAYER_MAX ; i++ )
+		{
+			if( i != m_id )
+			{
+				CCharcter* pOtherPlayer = pGameMode->GetCharcter( i );
+				CCollider3DSphere* pCollider = pOtherPlayer->GetBoundingSphere();
+
+				if( m_pBoundingSphere->Collide( *pCollider ) )
+				{
+					VECTOR3 dentValue = m_pBoundingSphere->GetDent( *pCollider , 1.0f );
+					m_pos.x += dentValue.x * 0.1f;
+					m_pos.z += dentValue.z * 0.1f;
+
+					VECTOR3 setMove = pOtherPlayer->GetMov();
+
+					setMove.x += m_mov.x * 1.75f;
+					setMove.z += m_mov.z * 1.75f;
+
+					setMove.x -= dentValue.x;
+					setMove.z -= dentValue.z;
+					pOtherPlayer->SetMov( setMove );
+
+					CDebugConsole::GetInstance()->Print( "HIT : %d->%d\n" , m_id , i );
+				}
+			}
+		}
 	}
 
-	if( m_pModelManager != NULL )
+	// 壁との当たり判定
+	if( m_pos.x + m_mov.x - m_Width / 2 < -WALL_WIDTH / 2 ||
+		m_pos.x + m_mov.x + m_Width / 2 > WALL_WIDTH / 2 )
 	{
-		m_pModelManager->Update();
+		m_mov.x *= -2.0f;
+		CDebugConsole::GetInstance()->Print( "WALL HIT X : %d\n" , m_id );
+		m_life--;
+	}
+
+	if( m_pos.z + m_mov.z - m_Depth / 2 < -WALL_DEPTH / 2 ||
+		m_pos.z + m_mov.z + m_Depth / 2 > WALL_DEPTH / 2 )
+	{
+		m_mov.z *= -2.0f;
+		CDebugConsole::GetInstance()->Print( "WALL HIT Z : %d\n" , m_id  );
+		m_life--;
+	}
+
+	//---------------------------------------
+	// [ 状態処理 ]
+	//---------------------------------------
+	if( m_life <= 0 )
+	{
+		// TODO : ここに状態遷移で死亡状態を入れる
 	}
 }
 
@@ -167,17 +276,98 @@ void CCharcter::Draw( void )
 	// ----------------------------------------------------------------------
 	// [ ワールドマトリックスの生成処理 ]
 	// ----------------------------------------------------------------------
-	MATRIX mtxRot , mtxTrans;													// 行列用ワーク
-	MatrixIdentity( &m_mtxWorld );												// 行列初期化
+	glMatrixMode( GL_MODELVIEW );
+	glPushMatrix();
 
-	MatrixRotationYawPitchRoll( &mtxRot , m_rot.y , m_rot.x , m_rot.z );		// 回転の行列を算出
-	MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxRot );						// 回転行列の合成
+	glTranslatef( m_pos.x , m_pos.y , m_pos.z );
 
-	MatrixTranslation( &mtxTrans , m_pos.x , m_pos.y , m_pos.z );				// 位置の行列を算出
-	MatrixMultiply( &m_mtxWorld , &m_mtxWorld , &mtxTrans );					// 位置行列の合成
+	glRotatef( RadToDeg( m_rot.z ) , 0.0f , 0.0f , 1.0f );
+	glRotatef( RadToDeg( m_rot.y ) , 0.0f , 1.0f , 0.0f );
+	glRotatef( RadToDeg( m_rot.x ) , 1.0f , 0.0f , 0.0f );
 
-	// モデルの描画
-	m_pModelManager->Draw( &m_mtxWorld );
+	glScalef( m_scl.x , m_scl.y , m_scl.z );
+
+	//---------------------------------
+	// [ 描画前処理 ]
+	//---------------------------------
+	glEnable( GL_NORMALIZE );
+	glBindTexture( GL_TEXTURE_2D , 0 );
+	glDisable( GL_TEXTURE_2D );
+
+	//---------------------------------
+	// [ 描画処理 ]
+	//---------------------------------
+	if( m_life > 0 )
+	{
+		for( DWORD matCnt = 0 ; matCnt < m_numMat ; matCnt++ )
+		{
+			m_pModel->DrawSubset( matCnt );
+		}
+	}
+
+	//---------------------------------
+	// [ 描画後処理 ]
+	//---------------------------------
+	glMatrixMode( GL_MODELVIEW );
+	glPopMatrix();
+
+	glDisable( GL_NORMALIZE );
+
+	if( m_pMat != NULL )
+	{
+		CMaterialGL pDefMat;
+
+		pDefMat.Set();							// 初期マテリアル設定
+	}
+
+	glEnable( GL_TEXTURE_2D );
+}
+
+//==============================================================================
+// 関数名 : void CCharcter :: Rotation( void )
+// 引数   : void
+// 戻り値 : void
+// 説明   : キャラクターを回転させる
+//==============================================================================
+void CCharcter :: Rotation( void )
+{
+	if( m_rotMokuhyou.y < -PI )
+	{//目標角度が小さすぎると調整
+		m_rotMokuhyou.y = PI * 2 + m_rotMokuhyou.y;
+	}
+	else if( m_rotMokuhyou.y > PI )
+	{//目標角度が大きすぎると調整
+		m_rotMokuhyou.y = m_rotMokuhyou.y - PI * 2;
+	}
+
+	if( m_rot.y < -PI )
+	{//最小値を過ぎたので角度は戻す
+		m_rot.y = PI;
+	}
+	else if( m_rot.y > PI )
+	{//最大値を過ぎたので角度は戻す
+		m_rot.y = -PI;
+	}
+
+	if( m_rotMokuhyou.y != m_rot.y )
+	{//プレイヤーキャラの角度を変える
+
+		if ( m_rotMokuhyou.y - m_rot.y < -PI )
+		{//目標角と今の角度が正負をまたいでいるとき
+
+			m_rot.y += ( PI * 2 + m_rotMokuhyou.y - m_rot.y ) / m_spinGensui;      // 回す
+		}
+		else if ( m_rotMokuhyou.y - m_rot.y > PI )
+		{//目標角と今の角度が正負をまたいでいるとき
+
+			m_rot.y += ( -PI * 2 + m_rotMokuhyou.y - m_rot.y ) / m_spinGensui;     // 回す
+		}
+		else
+		{//それ以外の時
+
+			m_rot.y += ( m_rotMokuhyou.y - m_rot.y ) / m_spinGensui;  // 回す
+		}
+	}
 }
 
 //==============================================================================

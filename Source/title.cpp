@@ -120,7 +120,7 @@ void CTitle::Update( void )
 	{
 		if( pInput->GetTrigger( DIK_RETURN ) )
 		{
-			CFade::FadeStart( new CGame , 30 );
+			CFade::FadeStart( new CGame( 0 , 0 ) , 30 );
 		}
 	}
 

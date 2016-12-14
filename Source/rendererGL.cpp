@@ -18,6 +18,7 @@
 #include "loader.h"
 #include "vertexBufferGL.h"
 #include "indexBufferGL.h"
+#include "main.h"
 
 //==============================================================================
 // —ñ‹“Œ^éŒ¾
