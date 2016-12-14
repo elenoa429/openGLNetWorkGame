@@ -44,13 +44,14 @@ public:
 	CPlayer();
 	~CPlayer();
 
-	static CPlayer* Create( CHARCTER_TYPE type );
+	static CPlayer* Create( int charcterType );
 
-	bool Init( CHARCTER_TYPE type );
+	bool Init( int charcterType );
 	void Uninit();
 	void Update();
 	void Draw();
-
+	void walk();
+	
 	//---------------------------------------------
 	// [ ƒƒ“ƒo•Ï” ]
 	//---------------------------------------------

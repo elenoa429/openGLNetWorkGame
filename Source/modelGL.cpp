@@ -15,6 +15,7 @@
 //==============================================================================
 #include "modelGL.h"
 #include "rendererGL.h"
+#include "main.h"
 
 //==============================================================================
 // 列挙型宣言
@@ -76,6 +77,8 @@ bool CModelGL::DrawSubset( DWORD attribId )
 		return false;	// 範囲外のため処理失敗
 	}
 
+	glEnable( GL_DEPTH_TEST );
+
 	// データ準備
 	SUBSET modelData = m_pSubsets[ attribId ];
 
@@ -107,6 +110,8 @@ bool CModelGL::DrawSubset( DWORD attribId )
 		}
 	}
 	glEnd();
+
+	glDisable( GL_DEPTH_TEST );
 
 	return true;		// 処理成功
 }

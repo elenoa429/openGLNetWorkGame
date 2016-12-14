@@ -24,6 +24,8 @@
 #include "sceneGL2D.h"
 #include "timeCount.h"
 #include "player.h"
+#include "otherPlayer.h"
+#include "wall.h"
 
 //==============================================================================
 // ライブラリへのリンク設定
@@ -54,14 +56,19 @@
 //==============================================================================
 
 //==============================================================================
-// 関数名 : CGame()
-// 引数   : void
+// 関数名 : CGame( int playerId , int playerType )
+// 引数   : int playerId   : プレイヤーのネットワークID( 0 ～ ( PLAYER_MAX - 1 ) まで )
+//          int playerType : プレイヤータイプ
 // 戻り値 : void
 // 説明   : デフォルトコンストラクタ
 //==============================================================================
-CGame::CGame()
+CGame::CGame( int playerId , int playerType )
 {
+	m_playerId   = playerId;
+	m_playerType = playerType;
 	m_pTiemCount = NULL;
+
+	memset( m_pCharcterArray , 0 , sizeof( m_pCharcterArray ) );
 }
 
 //==============================================================================
@@ -88,6 +95,13 @@ bool CGame::Init( void )
 	//---------------------------------------------
 	// [ 各シーンの生成 ]
 	//---------------------------------------------
+	VECTOR3 initialPos[ PLAYER_MAX ] = {
+		VECTOR3( -30.0f , 0.0f , -30.0f ),
+		VECTOR3( 30.0f , 0.0f , -30.0f ),
+		VECTOR3( -30.0f , 0.0f , 30.0f ),
+		VECTOR3( 30.0f , 0.0f , 30.0f ),
+	};
+
 	CSkyBox::Create( "data\\TEXTURE\\skyBox00.png" );
 	CSceneGL2D::Create( "data\\TEXTURE\\sample00_RGB24.bmp" );
 	
@@ -96,8 +110,23 @@ bool CGame::Init( void )
 	m_pTiemCount->SetOutputLeftZeroEnable( false );
 	m_pTiemCount->SetTime( 1100 );
 
-	CPlayer::Create( CCharcter::CHARCTER_TYPE_RABBITS );
-	
+	// プレイヤー生成
+	m_pCharcterArray[ m_playerId ] = CPlayer::Create( m_playerType );
+
+	// 他のプレイヤーの生成と初期位置設定
+	for( int i = 0 ; i < PLAYER_MAX ; i++ )
+	{
+		if( i != m_playerId )
+		{
+			m_pCharcterArray[ i ] = COtherPlayer::Create( i );
+		}
+
+		m_pCharcterArray[ i ]->SetPos( initialPos[ i ] );
+		m_pCharcterArray[ i ]->SetId( i );
+	}
+
+	CWall::Create();
+
 	//CSoundAL::GetSound()->Play(CSound::SOUND_LABEL_BGM_TEST00);
 
 	return true;
@@ -168,4 +197,20 @@ void CGame::Draw( void )
 	// [ 各シーンの描画処理 ]
 	//---------------------------------------------
 	CScene::DrawAll();
+}
+
+//==============================================================================
+// 関数名 : CCharcter* GetCharcter( int index )
+// 引数   : int index
+// 戻り値 : CCharcter*型
+// 説明   : プレイヤーポインター処理
+//==============================================================================
+CCharcter* CGame::GetCharcter( int index )
+{
+	if( index < 0 || index >= PLAYER_MAX )
+	{
+		return NULL;
+	}
+
+	return m_pCharcterArray[ index ];
 }

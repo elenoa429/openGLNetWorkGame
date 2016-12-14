@@ -13,6 +13,8 @@
 //==============================================================================
 // インクルードファイル
 //==============================================================================
+#include "client.h"
+
 #include "manager.h"
 
 #include "sceneGL.h"
@@ -20,6 +22,7 @@
 #include "soundAL.h"
 #include "editorCameraGL.h"
 #include "fade.h"
+#include "autoRotationCamera.h"
 
 // 各シーンのインクルード
 #include "sceneGLModel.h"
@@ -71,6 +74,7 @@ CManager::CManager()
 	m_pCamera   = NULL;
 	m_pMode     = NULL;
 
+	m_pClient = NULL;
 }
 
 //==============================================================================
@@ -93,6 +97,8 @@ CManager::~CManager()
 //==============================================================================
 bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 {
+	CDebugConsole::GetInstance()->Init();
+
 	//---------------------------------------------
 	// [ レンダラーの初期化 ]
 	//---------------------------------------------
@@ -112,10 +118,10 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 	//---------------------------------------------
 	// [ カメラの生成 ]
 	//---------------------------------------------
-	m_pCamera = new CCameraGL;
+	m_pCamera = new CAutoRotationCamera;
 	//m_pCamera->Init( VECTOR3( 0.0f , 3.0f , 5.0f ) );
 
-	m_pCamera->Init( VECTOR3( 0.0f , 600.0f , -1200.0f ) );
+	m_pCamera->Init( VECTOR3( 0.0f , 80.0f , 80.0f ) );
 
 	//---------------------------------------------
 	// [ ライトの生成 ]
@@ -189,7 +195,7 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 	//---------------------------------------------
 	// [ 初期モードの生成 ]
 	//---------------------------------------------
-	CFade::FadeStart( new CGame , 120 );
+	CFade::FadeStart( new CGame( 0 , 1 ) , 120 );
 
 	//---------------------------------------------
 	// [ サウンドの生成 ]
@@ -197,6 +203,9 @@ bool CManager::Init( HINSTANCE hInstance , HWND hWnd , bool bWindow )
 	CSound* pSound = CSoundAL::Create( 64 );		// サウンド処理生成
 
 	//pSound->Play( pSound->SOUND_LABEL_BGM_TEST00 );
+
+	// クライアント生成
+	//m_pClient = CClient::Create();
 
 	return true;	// 処理成功
 }
@@ -274,6 +283,13 @@ void CManager::Uninit( void )
 	//---------------------------------------------
 	CModel::ReleaseAll();
 
+	// クライアント終了
+	if( m_pClient != NULL )
+	{
+		m_pClient->SetFinishFlag( true );
+	}
+
+	CDebugConsole::GetInstance()->Uninit();
 }
 
 //==============================================================================

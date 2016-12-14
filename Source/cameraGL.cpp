@@ -23,7 +23,7 @@
 //==============================================================================
 // ƒ}ƒNƒ’è‹`
 //==============================================================================
-#define MOVE_SPEED		( 20.0f )
+#define MOVE_SPEED		( 2.0f )
 #define ROTATION_SPEED	( PI * 0.01f )
 
 //==============================================================================
@@ -134,10 +134,10 @@ void CCameraGL::Update( void )
 	{
 		if( m_bMove == true )
 		{
-			bPressW     = pInput->GetPress( DIK_W );
-			bPressS     = pInput->GetPress( DIK_S );
-			bPressA     = pInput->GetPress( DIK_A );
-			bPressD     = pInput->GetPress( DIK_D );
+			//bPressW     = pInput->GetPress( DIK_W );
+			//bPressS     = pInput->GetPress( DIK_S );
+			//bPressA     = pInput->GetPress( DIK_A );
+			//bPressD     = pInput->GetPress( DIK_D );
 			bPressQ     = pInput->GetPress( DIK_Q );
 			bPressE     = pInput->GetPress( DIK_E );
 			bPressZ     = pInput->GetPress( DIK_Z );

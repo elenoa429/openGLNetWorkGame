@@ -1,19 +1,26 @@
 //==============================================================================
-// タイトル     :   他のプレイヤークラス
-// ファイル名   :   otherPlayer.cpp
+// タイトル     :   クライアントクラス
+// ファイル名   :   client.cpp
 // 作成者       :   AT13B284 21 数藤凌哉
-// 作成日       :   2016/11/28
+// 作成日       :   2016/07/12
 //==============================================================================
 
 //==============================================================================
-// 更新履歴: -2016/11/28 数藤凌哉
+// 更新履歴: -2016/07/12 数藤凌哉
 //           ・制作開始
 //==============================================================================
 
 //==============================================================================
+// WARNING防止
+//==============================================================================
+#define _CRT_SECURE_NO_WARNINGS
+
+//==============================================================================
 // インクルードファイル
 //==============================================================================
-#include "otherPlayer.h"
+#include "client.h"
+#include <stdio.h>
+#include "debugConsole.h"
 
 //==============================================================================
 // ライブラリへのリンク設定
@@ -42,101 +49,182 @@
 //==============================================================================
 // 静的変数
 //==============================================================================
+bool CClient::m_isFinished = false;
 
 //==============================================================================
-// 関数名 : COtherPlayer()
+// 関数名 : CClient()
 // 引数   : void
 // 戻り値 : void
 // 説明   : デフォルトコンストラクタ
 //==============================================================================
-COtherPlayer::COtherPlayer()
+CClient::CClient()
 {
-
+	m_thID = 0;
+	m_hTh = NULL;
 }
 
 //==============================================================================
-// 関数名 : ~COtherPlayer()
+// 関数名 : ~CClient()
 // 引数   : void
 // 戻り値 : void
 // 説明   : デストラクタ
 //==============================================================================
-COtherPlayer::~COtherPlayer()
+CClient::~CClient()
 {
 
 }
 
 //==============================================================================
-// 関数名 : COtherPlayer* Create( int charcterType )
-// 引数   : int charcterType
-// 戻り値 : COtherPlayer*型
+// 関数名 : CClient* Create( void )
+// 引数   : void
+// 戻り値 : CClient*型
 // 説明   : 生成処理
 //==============================================================================
-COtherPlayer* COtherPlayer::Create( int charcterType )
+CClient* CClient::Create( void )
 {
-	COtherPlayer* pNewInstance = new COtherPlayer;
+	CClient* newInstance = new CClient;
 
-	if( pNewInstance->Init( charcterType ) == false )
-	{
-		pNewInstance->Release();
-		pNewInstance = NULL;
-	}
+	newInstance->Init();
 
-	return pNewInstance;
+	return newInstance;
 }
 
 //==============================================================================
-// 関数名 : bool Init( int charcterType )
-// 引数   : int charcterType
-// 戻り値 : bool型 : 成功判定
+// 関数名 : void Release( void )
+// 引数   : void
+// 戻り値 : bool型
+// 説明   : 解放処理
+//==============================================================================
+void CClient::Release( void )
+{
+	this->Uninit();
+
+	delete this;
+}
+
+//==============================================================================
+// 関数名 : bool Init( void )
+// 引数   : void
+// 戻り値 : bool型
 // 説明   : 初期化処理
 //==============================================================================
-bool COtherPlayer::Init( int charcterType )
+bool CClient::Init( void )
 {
-	if( CCharcter::Init( charcterType ) == false )
-	{
-		return false;
-	}
+	// WinSockの初期化
+	WSAStartup( MAKEWORD( 2 , 0 ) , &m_wd );
+
+	// ソケットの生成
+	m_sock = socket( AF_INET , SOCK_STREAM , 0 );
+
+	// アドレス設定
+	m_addr.sin_port = htons( 20000 );
+	m_addr.sin_family = AF_INET;
+	m_addr.sin_addr.s_addr = inet_addr( "172.29.9.180" );
+
+	CDebugConsole::GetInstance()->Print( "ClientInit\n" );
+
+	// マルチスレッド起動
+	m_hTh = ( HANDLE )_beginthreadex(
+		NULL ,
+		0 ,
+		mainLoop ,
+		this ,
+		0 ,
+		&m_thID );
 
 	return true;
 }
 
 //==============================================================================
-// 関数名 : void Uninit()
+// 関数名 : void Uninit( void )
 // 引数   : void
 // 戻り値 : void
 // 説明   : 終了処理
 //==============================================================================
-void COtherPlayer::Uninit()
+void CClient::Uninit( void )
 {
-	CCharcter::Uninit();
+	// ソケットの終了
+	closesocket( m_sock );
+
+	// WinSockの終了
+	WSACleanup();
 }
 
 //==============================================================================
-// 関数名 : void Update()
+// 関数名 : void Send( void )
 // 引数   : void
 // 戻り値 : void
-// 説明   : 更新処理
+// 説明   : データ送信処理
 //==============================================================================
-void COtherPlayer::Update( void )
+void CClient::Send( void )
 {
-	CCharcter::Update();
+	// 受信
+	char buf[ 256 ] = { 0 };
+
+	//// 翻訳・格納
+	//sprintf( buf , "%3.3f,%3.3f,%3.3f" , m_data.pos[ 0 ] , m_data.pos[ 1 ] , m_data.pos[ 2 ] );
+
+	// 送信
+	sendto(
+		m_sock ,
+		buf ,
+		sizeof( buf ) ,
+		0 ,
+		( SOCKADDR* )&m_addr ,
+		sizeof( m_addr ) );
 }
 
 //==============================================================================
-// 関数名 : void Draw()
+// 関数名 : void Recv()
 // 引数   : void
 // 戻り値 : void
-// 説明   : 描画処理
+// 説明   : データ受信処理
 //==============================================================================
-void COtherPlayer::Draw( void )
+void CClient::Recv()
 {
-	CCharcter::Draw();
+	// 
+	char data[ 256 ];
+	memset( data , 0 , sizeof( data ) );
+
+	recv( m_sock , data , sizeof( data ) , 0 );
+
+	CDebugConsole::GetInstance()->Print( "Recv : %s\n" , data );
+
+	//MessageBox( NULL , data , "RecvData" , MB_OK );
 }
 
 //==============================================================================
-// 関数名 : サンプル
+// 関数名 : void Connect()
 // 引数   : void
 // 戻り値 : void
-// 説明   : サンプル処理
+// 説明   : サーバとの接続処理
 //==============================================================================
+void CClient::Connect()
+{
+	// サーバに接続
+	connect( m_sock , ( sockaddr* )&m_addr , sizeof( m_addr ) );
+}
+
+//==============================================================================
+// 関数名 : unsigned int __stdcall mainLoop( void* obj )
+// 引数   : void
+// 戻り値 : void
+// 説明   : マルチスレッドのメインループ処理
+//==============================================================================
+unsigned int __stdcall CClient::mainLoop( void* obj )
+{
+	CClient* pClient = reinterpret_cast< CClient* >( obj );
+
+	pClient->Connect();
+
+	while( !m_isFinished )
+	{
+		//pClient->Connect();
+		pClient->Recv();
+	}
+
+	pClient->Release();
+
+	return 0;
+}
 
