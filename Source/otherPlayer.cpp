@@ -66,16 +66,16 @@ COtherPlayer::~COtherPlayer()
 }
 
 //==============================================================================
-// ä÷êîñº : COtherPlayer* Create()
-// à¯êî   : void
+// ä÷êîñº : COtherPlayer* Create( int charcterType )
+// à¯êî   : int charcterType
 // ñﬂÇËíl : COtherPlayer*å^
 // ê‡ñæ   : ê∂ê¨èàóù
 //==============================================================================
-COtherPlayer* COtherPlayer::Create()
+COtherPlayer* COtherPlayer::Create( int charcterType )
 {
 	COtherPlayer* pNewInstance = new COtherPlayer;
 
-	if( pNewInstance->Init() == false )
+	if( pNewInstance->Init( charcterType ) == false )
 	{
 		pNewInstance->Release();
 		pNewInstance = NULL;
@@ -85,13 +85,18 @@ COtherPlayer* COtherPlayer::Create()
 }
 
 //==============================================================================
-// ä÷êîñº : bool Init()
-// à¯êî   : void
+// ä÷êîñº : bool Init( int charcterType )
+// à¯êî   : int charcterType
 // ñﬂÇËíl : boolå^ : ê¨å˜îªíË
 // ê‡ñæ   : èâä˙âªèàóù
 //==============================================================================
-bool COtherPlayer::Init()
+bool COtherPlayer::Init( int charcterType )
 {
+	if( CCharcter::Init( charcterType ) == false )
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -103,7 +108,7 @@ bool COtherPlayer::Init()
 //==============================================================================
 void COtherPlayer::Uninit()
 {
-
+	CCharcter::Uninit();
 }
 
 //==============================================================================
@@ -114,6 +119,7 @@ void COtherPlayer::Uninit()
 //==============================================================================
 void COtherPlayer::Update( void )
 {
+	CCharcter::Update();
 }
 
 //==============================================================================
@@ -124,6 +130,7 @@ void COtherPlayer::Update( void )
 //==============================================================================
 void COtherPlayer::Draw( void )
 {
+	CCharcter::Draw();
 }
 
 //==============================================================================

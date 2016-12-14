@@ -28,6 +28,7 @@
 //==============================================================================
 // マクロ定義
 //==============================================================================
+#define PLAYER_MAX	( 4 )
 
 //==============================================================================
 // 構造体宣言
@@ -37,6 +38,7 @@
 // 前方宣言
 //==============================================================================
 class CTimeCount;
+class CCharcter;
 
 //==============================================================================
 // クラス宣言
@@ -47,7 +49,7 @@ class CGame : public CMode
 	// [ メンバ関数 ]
 	//---------------------------------------------
 public:
-	CGame();
+	CGame( int playerId , int playerType );
 	~CGame();
 
 	bool Init( void );
@@ -58,14 +60,19 @@ public:
 	//CPlayer* GetPlayer( void ){ return m_pPlayer; }
 	//CParticle* GetParticleBuffer( void ){ return m_pParticleBuffer; }
 
+	CCharcter* GetCharcter( int index );
+
 	//---------------------------------------------
 	// [ メンバ変数 ]
 	//---------------------------------------------
 private:
-	CTimeCount* m_pTiemCount;				// 時間カウンター処理へのポインタ
-	//CPlayer* m_pPlayer;						// プレイヤー処理へのポインタ
-	//CParticle* m_pParticleBuffer;			// パーティクルバッファーへのポインタ
-	//CTimeCount* m_pTimeCount;				// 時間カウンタへのポインタ
+	CTimeCount* m_pTiemCount;						// 時間カウンター処理へのポインタ
+	//CPlayer* m_pPlayer;							// プレイヤー処理へのポインタ
+	//CParticle* m_pParticleBuffer;					// パーティクルバッファーへのポインタ
+	//CTimeCount* m_pTimeCount;						// 時間カウンタへのポインタ
+	int m_playerId;									// プレイヤーのID
+	int m_playerType;								// プレイヤーのモデル種類
+	CCharcter* m_pCharcterArray[ PLAYER_MAX ];		// 自他含めたプレイヤーキャラクターへのポインター配列
 };
 
 //==============================================================================
