@@ -328,6 +328,10 @@ void CManager::Update( void )
 	//---------------------------------------------
 	// [ デバッグプロシージャの更新処理 ]
 	//---------------------------------------------
+	int fps = GetFps();
+
+	CDebugProc::GetDebugProc()->PrintDebugProc( "FPS : %d\n" , fps );
+
 	CDebugProc::GetDebugProc()->Update();
 
 	int test_i = 24;

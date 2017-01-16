@@ -57,7 +57,7 @@ CCharcter::CCharcter()
 {
 	m_pos = VECTOR3( 0.0f , 0.0f , 0.0f );
 	m_rot = VECTOR3( 0.0f , 0.0f , 0.0f );
-	m_scl = VECTOR3( 1.0f , 1.0f , 1.0f );
+	m_scl = VECTOR3( 5.0f , 5.0f , 5.0f );
 	m_gensui = VECTOR3( 0.025f , 0.025f , 0.025f );
 
 	m_id = 0;
